@@ -1,0 +1,7 @@
+Sanyi nyest 10
+Sanyi nyuszt 2
+Sanyi nyilmeregbeka 3
+Sanyi medve 3
+Gezaba kigyo 1
+Gezaba ambrascet 2000
+Gezaba medve 201100

@@ -1,0 +1,31 @@
+--
+-- CTAS peldak
+-- tábla/nézet másolása akár másik sémából
+--
+/*
+drop table szeret;
+drop table dolgozo;
+drop table osztaly;
+drop table fiz_kategoria;
+drop table employees;
+drop table departments;
+drop table szallit;
+drop table szallito;
+drop table cikk;
+drop table projekt;
+drop table emp;
+drop table dept;
+*/
+create table szeret as select * from nikovits.szeret;
+create table dolgozo as select * from nikovits.dolgozo;
+create table osztaly as select * from nikovits.osztaly;
+create table fiz_kategoria as select * from nikovits.fiz_kategoria;
+create table employees as select * from nikovits.employees;
+create table departments as select * from nikovits.departments;
+create table szallit as select * from nikovits.szallit;
+create table szallito as select * from nikovits.szallito;
+create table cikk as select * from nikovits.cikk;
+create table projekt as select * from nikovits.projekt;
+create table emp as select * from nikovits.emp;
+create table dept as select * from nikovits.dept;
+--

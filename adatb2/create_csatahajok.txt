@@ -1,0 +1,127 @@
+-- Lehetõségek: 
+-- 1. Csak szinonimát hozunk létre adott felhasználó meglévõ tábláihoz
+-- 2. Adott felhasználó meglévõ tábláiból létrehozzuk a saját tábláinkat
+-- 3. Közvetlenül létrehozva a saját tábláinkat
+
+-- Megvalósításuk: 
+-- 1. Csak szinonimát hozunk létre adott felhasználó meglévõ tábláihoz
+/*
+create or replace synonym Hajoosztalyok for nikovits.Hajoosztalyok;
+create or replace synonym Hajok for nikovits.Hajok;
+create or replace synonym Csatak for nikovits.Csatak;
+create or replace synonym Kimenetelek for nikovits.Kimenetelek;
+*/
+
+-- 2. Adott felhasználó meglévõ tábláiból létrehozzuk a saját tábláinkat
+/*
+drop table Kimenetelek;
+drop table Csatak;
+drop table Hajok;
+drop table Hajoosztalyok;
+
+create table Hajoosztalyok as select * from nikovits.Hajoosztalyok;
+create table Hajok as select * from nikovits.Hajok;
+create table Csatak as select * from nikovits.Csatak;
+create table Kimenetelek as select * from nikovits.Kimenetelek;
+*/
+
+-- 3. Közvetlenül létrehozva a saját tábláinkat
+
+drop table Kimenetelek;
+drop table Csatak;
+drop table Hajok;
+drop table Hajoosztalyok;
+
+create table Hajoosztalyok
+(
+	osztaly       varchar(15),
+	tipus         varchar(3),
+	orszag        varchar(20),
+	agyukszama    number,
+	kaliber       number,
+	vizkiszoritas number
+);
+INSERT INTO Hajoosztalyok VALUES ( 'Bismark','bb','Nemetorszag',8,15,42000) ;
+INSERT INTO Hajoosztalyok VALUES ( 'Iowa','bb','USA',9,16,46000);
+INSERT INTO Hajoosztalyok VALUES ( 'Kongo','bc','Japan',8,14,32000);
+INSERT INTO Hajoosztalyok VALUES ( 'North Carolina','bb','USA',9,16,37000);
+INSERT INTO Hajoosztalyok VALUES ( 'Renown','bc','Nagy Britannia',6,15,32000);
+INSERT INTO Hajoosztalyok VALUES ( 'Revenge','bb','Nagy Britannia',8,15,29000);
+INSERT INTO Hajoosztalyok VALUES ( 'Tennessee','bb','USA',12,14,32000);
+INSERT INTO Hajoosztalyok VALUES ( 'Yamato','bb','Japan',9,18,65000);
+
+
+create table Hajok
+(
+	hajonev    varchar(20),
+	osztaly    varchar(15),
+	felavatva  number
+);
+INSERT INTO Hajok VALUES ( 'California','Tennessee',1921);
+INSERT INTO Hajok VALUES ( 'Haruna','Kongo',1915);
+INSERT INTO Hajok VALUES ( 'Hiei','Kongo',1914);
+INSERT INTO Hajok VALUES ( 'Iowa','Iowa',1943);
+INSERT INTO Hajok VALUES ( 'Kirishima','Kongo',1915);
+INSERT INTO Hajok VALUES ( 'Kongo','Kongo',1913);
+INSERT INTO Hajok VALUES ( 'Missuri','Iowa',1944);
+INSERT INTO Hajok VALUES ( 'Musashi','Yamato',1942);
+INSERT INTO Hajok VALUES ( 'New Jersey','Iowa',1943);
+INSERT INTO Hajok VALUES ( 'North Carolina','North Carolina',1941);
+INSERT INTO Hajok VALUES ( 'Ramillies','Revenge',1917);
+INSERT INTO Hajok VALUES ( 'Renown','Renown',1916);
+INSERT INTO Hajok VALUES ( 'Repulse','Renown',1916);
+INSERT INTO Hajok VALUES ( 'Resolution','Revenge',1916);
+INSERT INTO Hajok VALUES ( 'Revenge','Revenge',1916);
+INSERT INTO Hajok VALUES ( 'Royal Oak','Revenge',1916);
+INSERT INTO Hajok VALUES ( 'Royal Sovereign','Revenge',1916);
+INSERT INTO Hajok VALUES ( 'Tennesse','Tenesse',1920);
+INSERT INTO Hajok VALUES ( 'Washington','North Carolina',1941);
+INSERT INTO Hajok VALUES ( 'Wisconsin','Iowa',1944);
+INSERT INTO Hajok VALUES ( 'Yamato','Yamato',1941);
+
+
+create table Csatak
+(
+	csatanev  varchar(15),
+	datum     date
+);
+INSERT INTO Csatak VALUES ( 'Denmark Strait', to_date('1941.05.24', 'yyyy.mm.dd'));
+INSERT INTO Csatak VALUES ( 'Guadalcanal', to_date('1942.11.15', 'yyyy.mm.dd'));
+INSERT INTO Csatak VALUES ( 'North Cape', to_date('1943.12.26', 'yyyy.mm.dd'));
+INSERT INTO Csatak VALUES ( 'Suriago Strait', to_date('1944.10.25', 'yyyy.mm.dd'));
+
+create table Kimenetelek
+(
+	hajonev   varchar(20),
+	csatanev  varchar(15),
+	eredmeny  varchar(15)
+);
+INSERT INTO Kimenetelek VALUES ( 'Arizona','Pearl Harbour','elsullyedt');
+INSERT INTO Kimenetelek VALUES ( 'Bismark','Denmark Strait','elsullyedt');
+INSERT INTO Kimenetelek VALUES ( 'California','Surigao Strait','ep');
+INSERT INTO Kimenetelek VALUES ( 'Duke of York','North Cape','ep');
+INSERT INTO Kimenetelek VALUES ( 'Fuso','Surigao Strait','elsullyedt');
+INSERT INTO Kimenetelek VALUES ( 'Hood','Denmark Strait','elsullyedt');
+INSERT INTO Kimenetelek VALUES ( 'King George V','Denmark Strait','ep');
+INSERT INTO Kimenetelek VALUES ( 'Kirishima','Guadalcanal','elsullyedt');
+INSERT INTO Kimenetelek VALUES ( 'Prince of Wales','Denmark Strait','megserult');
+INSERT INTO Kimenetelek VALUES ( 'Rodney','Denmark Strait','ep');
+INSERT INTO Kimenetelek VALUES ( 'Scharnhorst','North Cape','elsullyedt');
+INSERT INTO Kimenetelek VALUES ( 'South of Dakota','Guadalcanal','megserult');
+INSERT INTO Kimenetelek VALUES ( 'Tennessee','Surigao Strait','ep');
+INSERT INTO Kimenetelek VALUES ( 'Washington','Guadalcanal','ep');
+INSERT INTO Kimenetelek VALUES ( 'West Wirginia','Surigao Strait','ep');
+INSERT INTO Kimenetelek VALUES ( 'Yamashiro','Surigao Strait','elsullyedt');
+
+select * from Hajoosztalyok;
+select * from Hajok;
+select * from Csatak;
+select * from Kimenetelek;
+
+-- Adjunk a táblákhoz jogokat, hogy mások is lekérdezhessék (select)
+
+grant select on Hajoosztalyok to public;
+grant select on Hajok to public;
+grant select on Csatak to public;
+grant select on Kimenetelek to public;
+

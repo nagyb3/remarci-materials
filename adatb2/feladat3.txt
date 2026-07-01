@@ -1,0 +1,70 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK3 nevû,
+két oszlopos táblát, ami azokat a (Név, FõnökNév) párokat tartalmazza, ahol 
+a két ember neve ugyanannyi betûbõl áll.
+Határidõ: a gyakorlat napján 23:59
+
+Az eddig elkészített kötelezõ feladataik meglétét ellenõrizni tudják a következõ
+SQL lekérdezés futtatásával:
+
+SELECT object_name "TABLE", created FROM user_objects 
+WHERE object_type='TABLE' AND object_name LIKE 'GYAK%'
+ORDER BY object_name;
+===========================================================================
+
+Lekérdezések további táblákra
+-----------------------------
+NIKOVITS.DOLGOZO       (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY       (oazon, onev, telephely)
+NIKOVITS.Fiz_kategoria (kategoria, also, felso)
+-----------------------------------------------
+1   700  1200
+2  1201  1400
+3  1401  2000
+4  2001  3000
+5  3001  9999
+
+CREATE TABLE Fiz_kategoria  -- Fizetési kategóriák
+ (kategoria NUMERIC,        -- a kategória sorszáma, pl. 1, 2, 3 stb.
+  also NUMERIC,             -- a kategória alsó határa (a határ is beleszámít)
+  felso NUMERIC             -- a kategória felsõ határa (a határ is beleszámít)
+);                          -- egy dolgozó abba a fizetési kategóriába tartozik, amely intervallumba a fizetése esik
+
+FELADAT: Beépített függvények (A megoldást csak SQL-ben adjuk meg.)
+=======
+
+1.  Adjuk meg azon dolgozókat, akik fizetése osztható 15-tel.
+2.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+   (Aktuális dátumformátumot lásd -> SYSDATE fv.)
+3.  Adjuk meg azon dolgozókat, akik nevének második betûje 'A'. (használjuk a substr függvényt)
+4.  Adjuk meg azon dolgozókat, akik nevében van legalább két 'L' betû. (használjuk az instr függvényt)
+5.  Adjuk meg a dolgozók nevének utolsó három betûjét. (substr fv.)
+6.  Adjuk meg azon dolgozókat, akik nevének utolsó elõtti betûje 'T'. (substr fv.)
+7.  Adjuk meg a dolgozók fizetéseinek négyzetgyökét két tizedesre, és ennek egészrészét. (round, sqrt, trunc fv-ek)
+8.  Adjuk meg, hogy hány napja dolgozik a cégnél ADAMS és milyen hónapban lépett be. (dátumaritmetika + dátum függvények)
+9.  Adjuk meg azokat a dolgozókat, akik keddi napon léptek be. (to_char fv.) 
+   (Vigyázzunk a visszaadott értékkel, és annak hosszával!)
+10. Adjuk meg azokat a (név, fõnök) párokat, ahol a két ember neve ugyanannyi betûbõl áll. (length fv.)
+11. Adjuk meg azon dolgozókat, akik az 1-es fizetési kategóriába tartoznak.
+12. Adjuk meg azon dolgozókat, akiknek a fizetési kategóriája páros szám. (mod() függvény)
+13. Adjuk meg, hogy hány nap volt KING és JONES belépési dátuma között?
+14. Adjuk meg, hogy milyen napra esett KING belépési dátuma hónapjának utolsó napja. (last_day() függvény)
+15. Adjuk meg, hogy milyen napra esett KING belépési dátuma hónapjának elsõ napja. (trunc fv. dátumra)
+16. Adjuk meg azon dolgozók nevét, akik osztályának nevében van 'C' betû és fizetési kategóriájuk >=4.
+
+
+1.6 példa (Kende-Nagy példatárból) 
+Listázzuk ki a dolgozók nevét és fizetését, valamint jelenítsük meg a fizetést grafikusan
+úgy, hogy a fizetést 1000 Ft-ra kerekítve, minden 1000 Ft-ot egy '#' jel jelöl.
+(például 5000 -> #####, 800 -> #)
+
+1.8 példa (Kende-Nagy példatárból)
+Listázzuk ki azoknak a dolgozóknak a nevét, fizetését, jutalékát, és a jutalék/fizetés
+arányát, akiknek a foglalkozása eladó (SALESMAN). Az arányt két tizedesen jelenítsük meg.
+
+
+Az alábbi lekérdezések megoldását adjuk meg relációs algebrában és SQL-ben.
+---------------------------------------------------------------------------
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek van 1-es fizetési kategóriájú dolgozója.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek nincs 1-es fizetési kategóriájú dolgozója.

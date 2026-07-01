@@ -1,0 +1,43 @@
+További gyakorló feladatok újabb táblákra:
+
+NIKOVITS.CIKK     (ckod, cnev, szin, suly)              -- cikkek kódja, neve, színe, súlya
+NIKOVITS.PROJEKT  (pkod, pnev, helyszin)                -- projektek kódja, neve, helyszíne
+NIKOVITS.SZALLITO (szkod, sznev, statusz, telephely)    -- szállítók kódja, neve, státusza, telephelye
+NIKOVITS.SZALLIT  (szkod, ckod, pkod, mennyiseg, datum) -- a szallító a cikket a projekthez szállítja 
+
+A feladatok után szögletes zárójelben szerepel, hogy az eredménynek milyen oszlopai legyenek.
+
+Alkérdés (Subselect)  =ANY, <ALL, IN, EXISTS ...
+------------------------------------------------
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket valamelyik pécsi ('Pecs') szállító szállít. [ckod, cnev]
+-- Adjuk meg, hogy hány ilyen cikk van. [darab]
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket egyik pécsi szállító sem szállít. [ckod, cnev]
+-- Adjuk meg, hogy hány ilyen cikk van. [darab]
+-- Adjuk meg azon szállítók nevét, akiknek a státusza 10-nél nagyobb és 
+   budapesti projektbe szállítanak szék nevû cikket. ('Budapest', 'szek')  [sznev]
+-- Adjuk meg azon projektek kódját, amelyekhez szállítanak kék cikket. ('kek')  [pkod]
+-- Adjuk meg azon projektek kódját és nevét, amelyekhez szállítanak kék cikket. [pkod, pnev]
+-- Adjuk meg azon projektek kódját és nevét, amelyekhez nem szállítanak kék cikket. [pkod, pnev]
+-- Adjuk meg azon cikkek kódját, amelyeket szállítanak valahova. [ckod]
+-- Adjuk meg, hogy hány ilyen cikk van. [darab]
+-- Adjuk meg azon cikkek kódját, amelyeket nem szállítanak sehova. [ckod]
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket sehova nem szállítanak.  [ckod, cnev]
+-- Adjuk meg azon kék ('kek') cikkek kódját, amelyeket szállítanak valahova. [ckod] 
+-- Adjuk meg azon piros színû cikkek kódját, amelyeket sehova nem szállítanak. [ckod]
+-- Adjuk meg azon cikkek nevét, amelyeket minden projekthez szállítanak.  [cnev]
+-- Melyik cikket hány különbözõ projekthez szállítják? [ckod, cnev, darab]
+-- Melyik cikket szállítják a legtöbb projekthez? (Leolvassuk a rendezett listából) [ckod, cnev]
+   Majd adjuk meg leolvasás nélkül felsõ-N elemzés segítségével. [ckod, cnev]
+-- Adjuk meg azon cikkek nevét, amelyeket valamelyik projekthez nem szállítanak. [cnev]
+-- Adjuk meg azon cikkek kódját és nevét, amelyeket kevesebb mint 6 projekthez szállítanak. [ckod, cnev]
+-- Adjuk meg azon zöld ('zold') színû cikkek nevét, amelyeket minden projekthez szállítanak. [cnev]
+-- Adjuk meg azon zöld ('zold') színû cikkek nevét, amelyet valamelyik projekthez nem szállítanak. [cnev] 
+-- Adjuk meg azon projektek nevét, amelyekhez minden zöld ('zold') színû cikket szállítanak. [pnev]
+-- Adjuk meg azon szállítók nevét és telephelyét, akik valamelyik cikket minden projekthez szállítják. [sznev, telephely]
+-- Adjuk meg azon szállítók nevét és telephelyét, akik valamelyik cikket minden pécsi ('Pecs') projekthez 
+   szállítják. [sznev, telephely]
+-- Adjuk meg azon szállítók nevét és telephelyét, akik valamelyik kék ('kek') cikket minden projekthez 
+   szállítják. [sznev, telephely]
+-- Adjuk meg azon szállítók nevét, akik minden cikket szállítanak minden projekthez. [sznev]
+-- Adjuk meg azon szállítók nevét, akik minden kék cikket szállítanak minden projekthez. [sznev]
+

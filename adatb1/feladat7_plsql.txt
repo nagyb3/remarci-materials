@@ -1,0 +1,58 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK8 nevû 
+két oszlopos táblát, ami azoknak a dolgozóknak a kódját (dkod) és nevét (dnev) 
+tartalmazza, akiknek a dolgozó kódja prímszám.
+Határidõ: a következõ gyakorlat kezdete, mivel a megoldáshoz át kell nézniük a PL/SQL nyelvet.
+
+Az eddig elkészített kötelezõ feladataikat ellenõrizni tudják a következõ
+SQL lekérdezés futtatásával:
+
+SELECT object_name "TABLE", created FROM user_objects 
+WHERE object_type='TABLE' AND object_name LIKE 'GYAK%'
+ORDER BY object_name;
+===========================================================================
+
+/* Írjunk meg egy függvényt, amelyik eldönti egy számról, hogy prím-e. Return: igen -> 1, nem -> 0 */
+CREATE OR REPLACE FUNCTION prim(n integer) RETURN number IS
+Tesztelés:
+SELECT prim(26388279066623) from dual;
+---------------------------------------------------------
+
+/* Írjunk meg egy procedúrát, amelyik kiírja az n-edik Fibonacchi számot 
+   fib_1 = 0, fib_2 = 1, fib_3 = 1, fib_4 = 2 ... fib_i = a megelõzõ kettõ összege
+*/
+CREATE OR REPLACE PROCEDURE fib(n integer) IS
+Tesztelés:
+set serveroutput on
+execute fib(10);
+---------------------------------------------------------
+
+/* Írjunk meg egy függvényt, amelyik visszaadja két szám legnagyobb közös osztóját */
+CREATE OR REPLACE FUNCTION lnko(p1 integer, p2 integer) RETURN number IS
+Tesztelés:
+SELECT lnko(3570,7293) FROM dual;
+---------------------------------------------------------
+
+/* Írjunk meg egy függvényt, amelyik visszaadja n faktoriálisát */
+CREATE OR REPLACE FUNCTION faktor(n integer) RETURN integer IS
+Tesztelés:
+SELECT faktor(10) FROM dual;
+---------------------------------------------------------
+
+/* Írjunk meg egy függvényt, amelyik megadja, hogy hányszor fordul elõ egy 
+   karakterláncban -> p1 egy másik részkarakterlánc -> p2 
+*/
+CREATE OR REPLACE FUNCTION hanyszor(p1 VARCHAR2, p2 VARCHAR2) RETURN integer IS
+Tesztelés:
+SELECT hanyszor ('ab c ab ab de ab fg', 'ab') FROM dual;
+---------------------------------------------------------
+
+/* Írjunk meg egy függvényt, amelyik visszaadja a paraméterként szereplõ '+'-szal 
+   elválasztott számok összegét.
+*/
+CREATE OR REPLACE FUNCTION osszeg(p_char VARCHAR2) RETURN number IS
+Tesztelés:
+SELECT osszeg('1 + 4 + 13 + -1 + 0') FROM dual;
+---------------------------------------------------------
+

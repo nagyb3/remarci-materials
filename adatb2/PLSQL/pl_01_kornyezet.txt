@@ -1,0 +1,187 @@
+Futtató környezet
+-----------------
+SQL és PL/SQL utasításokat SQL*PLUS parancssoros környezetbõl és SqlDeveloper programból tudunk futtatni.
+Az SqlDeveloper sok úgynevezett SQL*PLUS parancsot (nem SQL utasítást) is végrehajt, mint pl. a DESCRIBE.
+
+Az SqlDeveloper eltérõen viselkedik attól függõen, hogy utasításként futtatunk-e valamit (Run Statement, vagy Ctrl + Enter),
+illetve scriptként (kijelöljük, majd F5 billentyû).
+
+/*************** érvényesség, láthatóság *************/
+<<cimke1>>
+DECLARE
+  a  NUMBER;
+BEGIN
+  a:=2;
+  <<cimke2>>
+  DECLARE
+    a number;
+  BEGIN
+    a:=4;
+    dbms_output.put_line(cimke1.a);
+    dbms_output.put_line(cimke2.a);
+    dbms_output.put_line(a);
+  END;
+  dbms_output.put_line(a);
+END;
+/
+EREDMÉNY:
+---------
+2
+4
+4
+2
+
+
+/************** külsõ, úgynevezett bind (SZERVER oldali) változók használata *************/
+/* az alábbi utasítás (VARIABLE) egy szerver oldali változót hoz létre */
+/* a plsql programok hivatkozhatnak a változóra, értéket is adhatnak neki */
+/* a plsql blokkot, vagy SQL utasítást kijelölve, scriptként kell futtatni (F5 bill.) */
+
+Variable v number;
+BEGIN
+ :v := mod(121,3);
+END;
+/
+print v;
+         V
+----------
+         1
+
+SELECT :v+1 oszlop FROM dual;  -- jelöljük ki az utasítást + F5 bill.
+    oszlop
+----------
+         2
+
+/************** képernyõre írás *************/
+set serveroutput on
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Hello World!');
+END;
+/
+
+/*
+ A SET SERVEROUTPUT ON  utasítás kiadása SQL*Plus-ban azzal egyenértékû, mintha kiadnánk a 
+ DBMS_OUTPUT.ENABLE (buffer_size => NULL); utasítást. DBMS_OUTPUT.DISABLE esetén nem ír a pufferbe.
+ A PL/SQL program valójában nem a képernyõre, hanem egy pufferbe ír. A futtató környezet 
+ (sqlplus, SqlDeveloper) ír a képernyõre, úgy, hogy kiolvassa a pufferbõl a sorokat a 
+ GET_LINE procedúrával, mint az alábbi program.
+*/
+
+SET SERVEROUTPUT ON
+DECLARE
+  v_status  INTEGER := 0;
+  v_line    VARCHAR2(100); 
+  v_buff    VARCHAR2(1000);
+BEGIN 
+  DBMS_OUTPUT.PUT_LINE('bubu'); DBMS_OUTPUT.PUT_LINE('bibi'); DBMS_OUTPUT.PUT_LINE('baba');
+  WHILE v_status = 0 LOOP
+    DBMS_OUTPUT.GET_LINE (v_line, v_status);
+    v_buff := v_buff || v_line;
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE(v_buff);
+END;
+/
+EREDMÉNY:
+---------
+bububibibaba
+
+
+/*
+A futtató környezet csak a PL/SQL program lefutása után olvassa a puffert, és írja ki a képernyõre a tartalmát.
+Ha egy SQL utasítást futtatunk (Run Statement vagy Ctrl+Enter), ami explicit vagy implicit módon meghív egy 
+alprogramot, akkor a pufferbe írt adatok nem íródnak ki a képernyõre.
+*/
+
+CREATE OR REPLACE FUNCTION printf(msg VARCHAR) RETURN NUMBER IS
+BEGIN
+   DBMS_OUTPUT.PUT_LINE(msg); 
+   return 1;
+END;
+/
+SELECT printf('Hello') FROM dual;   -- Ctrl + Enter -> nem ír ki semmit, a szöveg a pufferben marad (kijelölés + F5 kiírja)
+
+DECLARE
+ v number;
+BEGIN 
+  v:= printf('Hello2');  -- kiírja a képernyõre a puffer korábbi tartalmát is
+END; 
+/
+
+CREATE OR REPLACE PROCEDURE printp(msg VARCHAR) IS
+BEGIN
+   DBMS_OUTPUT.PUT_LINE(msg); 
+END;
+/
+CALL printp('Hello');   -- kiírja
+
+-- Az alábbi után kiíródik a szöveg, mert az egy PL/SQL blokkban futtatja a procedúrát.
+EXECUTE printp('Hello')
+
+-- Az elõzõ hívás ekvivalens a következõvel:  
+BEGIN printp('Hello'); END;
+
+
+SET SERVEROUTPUT OFF  -- OFF és nem ON !!!
+BEGIN 
+  DBMS_OUTPUT.PUT_LINE('elsõ program');     -- nem kerül bele a szöveg a pufferbe
+END;
+/
+
+
+/****************** adatbekérés a felhasználótól (KLIENS oldali változókba) ****************/
+/* az alábbi v1, v2 kliens oldali változók DEFINE/UNDEFINE-al is létrehozhatók/törölhetõk  */
+/* még az SQL utasítás szerverhez való elküldése elõtt behelyettesítõdik az értékük */
+/* lásd az SQL*Plus Referenciában az ACCEPT utasítást */
+
+ACCEPT v1 NUMBER FORMAT '99' PROMPT 'Adja meg az osztály azonosítót:'
+ACCEPT v2 DATE FORMAT 'yyyy.mm.dd' DEFAULT "1982.01.01" PROMPT 'Dátum (formátum: 2013.01.30)'
+SET verify on          -- írja ki a változó behelyettesítés után az utasításokat
+set serveroutput on
+DECLARE 
+  v_osszeg NUMBER;
+BEGIN
+  SELECT sum(fizetes) INTO v_osszeg FROM dolgozo WHERE oazon = &v1 AND belepes < to_date('&v2', 'yyyy.mm.dd');
+  dbms_output.put_line(v_osszeg);
+END;
+/
+
+
+/****************** rekordok ****************/
+DECLARE
+  TYPE rektip IS RECORD(m1 INTEGER, m2 VARCHAR2(10));
+  rec rektip;
+BEGIN
+  rec.m1 := 1; rec.m2 := 'Bubu';
+  DBMS_OUTPUT. PUT_LINE(rec.m2);
+END;
+
+
+/****************** rekordok, tömbök ****************/
+set serveroutput on
+DECLARE
+  TYPE rek_type IS RECORD(f1 INTEGER DEFAULT 10, f2 osztaly%ROWTYPE);  -- beágyazott rekord
+  rec rek_type;
+  TYPE tab_type IS TABLE OF INTEGER INDEX BY BINARY_INTEGER;   -- asszociatív tömb (index by tömb)
+  TYPE rek_type2 IS RECORD(f1 INTEGER, f2 tab_type);           -- mezõbe ágyazott tömb
+  rec2 rek_type2;
+  rec_oszt osztaly%ROWTYPE;     -- ez is rekord
+BEGIN
+ rec_oszt.onev := 'SALES';
+ dbms_output.put_line(rec.f1);                             -- mezõ default értéke
+ 
+ SELECT * INTO rec.f2 FROM osztaly WHERE oazon = 10;       -- rec (beágyazott rekord)
+ dbms_output.put_line(rec.f2.telephely);
+ 
+ rec2.f2(1) := 100; rec2.f2(2) := 200; rec2.f2(3) := 300;  -- rec2 (mezõbe ágyazott tömb)
+ FOR i IN rec2.f2.FIRST .. rec2.f2.LAST LOOP
+   dbms_output.put_line(rec2.f2(i));
+ END LOOP;
+END;
+/
+EREDMÉNY:
+---------
+10
+NEW YORK
+100
+200
+300

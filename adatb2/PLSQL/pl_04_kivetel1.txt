@@ -1,0 +1,51 @@
+Elõre deklarált kivételek lekérdezése:
+
+SELECT text FROM all_source WHERE type = 'PACKAGE'
+AND name = 'STANDARD' AND lower(text) LIKE '%zero_divide%';
+
+/* Az alábbi program 3 egymásba ágyazott blokkot tartalmaz.
+   Nézzük meg, hogy az egyes kivételeket melyik kivételkezelõ rész kezeli le.
+*/
+
+SET SERVEROUTPUT ON
+BEGIN                       
+ DECLARE
+  v1 emp.sal%TYPE;
+  v2 emp.comm%TYPE;
+  v3 INTEGER := 0;
+ BEGIN
+  v3 := 1/v3;                                                    -- 2. comment this second
+  BEGIN
+   SELECT sal, comm INTO v1, v2 FROM emp WHERE ename LIKE 'S%';  -- 3. then change it to  'X%'
+  EXCEPTION
+   WHEN too_many_rows THEN 
+    BEGIN
+     v1 := 1; v2 := 2;
+    END;
+  END;
+  dbms_output.put_line(to_char(v1)||' -- '|| nvl(to_char(v2), 'null'));
+ 
+ EXCEPTION
+  WHEN zero_divide THEN dbms_output.put_line('zero divide');      -- 1. comment this first       
+  WHEN too_many_rows THEN dbms_output.put_line('too many rows');
+ END;
+ dbms_output.put_line('main program');
+EXCEPTION
+  WHEN OTHERS THEN dbms_output.put_line(SQLCODE || ' -- ' || sqlerrm);
+END;
+/
+first output:   zero divide
+                main program
+second output:  -1476 -- ORA-01476: division by zero
+third output:   1 -- 2        too many rows handled
+                main program
+fourth output:  100 -- ORA-01403: No Data found
+
+
+Hibakódoknak megfelelõ hibaüzenet kiíratása:
+
+set serveroutput on
+begin
+ dbms_output.put_line(SQLERRM(-6502));
+end;
+/

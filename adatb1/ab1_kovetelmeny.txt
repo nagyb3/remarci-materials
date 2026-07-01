@@ -1,0 +1,23 @@
+Programtervezõ informatikus BSC  
+Adatbázisok 1. gyakorlat 
+2023/2024 tavaszi félév
+Gyakorlatvezetõ: dr. Vincellér Zoltán
+
+A gyakorlati jegy megszerzésének feltételei:
+--------------------------------------------
+- Jelenlét. Maximum 3 hiányzás megengedett.
+- Órai kötelezõ feladat megoldása (lásd feladat1.txt, feladat2.txt ...)
+  Minden órán (kivéve a két zh-n) lesz egy kötelezõen megoldandó feladat (tehát összesen 10 ilyen feladat lesz), 
+  amelyet a gyakorlat napjának végéig kell elkészíteni. Ez egy egyszerû feladat, amihez minden  szükséges tudnivaló
+  elhangzik az adott gyakorlaton. A feladat a gyakorlaton való aktív munkát ellenõrzi. A 10 feladatból
+  legalább 7-et meg kell oldania a hallgatónak, ami összangban van a 3 hiányzás lehetõségével, valamint 
+  azzal, hogy a tárgy folyamatos számonkérésû.
+- 2 zh (várhatóan a 7. és 12. gyakorlaton, mindkettõn legalább 2-es jegyet kell szerezni.)
+- A gyakorlati jegyet a 2 ZH érdemjegyének átlaga adja. 
+- Az egyik zh jegy (1-es vagy bármilyen más jegy) a vizsgaidõszak elsõ hetében javítható.
+  A javítás után a korábbi jegy és az új érdemjegy átlaga képezi a zh jegyét.
+
+Bármilyen (egészségügyi vagy egyéb) egyéni probléma esetén kérem keressen meg az illetõ emailben 
+(lehetõség szerint még a gyakorlat kezdete elõtt),
+és méltányosság keretében igyekszem megoldást találni a helyzetre.
+

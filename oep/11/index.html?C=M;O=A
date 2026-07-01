@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <title>Index of /Archives/Objektumelvű programozás/kódolós gyak/11</title>
+ </head>
+ <body>
+<h1>Index of /Archives/Objektumelvű programozás/kódolós gyak/11</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=A">Name</a></th><th><a href="?C=M;O=D">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top"><img src="/icons/back.gif" alt="[PARENTDIR]"></td><td><a href="/Archives/Objektumelv%c5%b1%20programoz%c3%a1s/k%c3%b3dol%c3%b3s%20gyak/">Parent Directory</a></td><td>&nbsp;</td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="alarm_allapotgep.pdf">alarm_allapotgep.pdf</a></td><td align="right">2024-09-06 19:07  </td><td align="right"> 35K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="alarmset.cpp">alarmset.cpp</a></td><td align="right">2024-09-06 19:07  </td><td align="right">1.1K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="alarmset.h">alarmset.h</a></td><td align="right">2024-09-06 19:07  </td><td align="right">756 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="door.cpp">door.cpp</a></td><td align="right">2024-09-06 19:07  </td><td align="right">616 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="door.h">door.h</a></td><td align="right">2024-09-06 19:07  </td><td align="right">719 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="main.cpp">main.cpp</a></td><td align="right">2024-09-06 19:07  </td><td align="right">1.2K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="signal.h">signal.h</a></td><td align="right">2024-09-06 19:07  </td><td align="right"> 63 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="statemachine.hpp">statemachine.hpp</a></td><td align="right">2024-09-06 19:07  </td><td align="right">1.4K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="system.h">system.h</a></td><td align="right">2024-09-06 19:07  </td><td align="right">1.1K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="threadsafequeue.hpp">threadsafequeue.hpp</a></td><td align="right">2024-09-06 19:07  </td><td align="right">1.0K</td><td>&nbsp;</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.67 (Debian) Server at remarci.web.elte.hu Port 443</address>
+</body></html>

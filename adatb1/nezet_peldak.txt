@@ -1,0 +1,97 @@
+Nézet táblák (VIEW)
+-------------------
+
+A lekérdezésekhez a NIKOVITS felhasználó tulajdonában levõ táblákat használjuk! 
+
+NIKOVITS.DOLGOZO    (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY    (oazon, onev, telephely)
+NIKOVITS.CIKK       (ckod, cnev, szin, suly)
+NIKOVITS.PROJEKT    (pkod, pnev, helyszin)
+NIKOVITS.SZALLITO   (szkod, sznev, statusz, telephely)
+NIKOVITS.SZALLIT    (szkod, ckod, pkod, mennyiseg, datum)
+
+
+- Melyik cikket szállítják a legtöbb projekthez?
+CREATE OR REPLACE VIEW cikk_proj_db
+AS 
+SELECT cikk.ckod ckod, cnev, COUNT(DISTINCT pkod) darab FROM cikk, szallit
+WHERE cikk.ckod=szallit.ckod
+GROUP BY cikk.ckod, cnev;
+-- SELECT * FROM cikk_proj_db order by darab DESC;
+
+SELECT ckod, cnev, darab FROM cikk_proj_db
+WHERE darab = (SELECT MAX(darab) FROM cikk_proj_db);
+
+/*
+A lekérdezés úgy is megadható, hogy ne kelljen nézetet létrehozni.
+Az alábbi lekérdezésben a "nézet" csak a lekérdezés idejére jön létre.
+Ezt úgy is hívjuk, hogy INLINE nézet.
+*/
+
+SELECT ckod, cnev, darab FROM
+  (SELECT cikk.ckod ckod, cnev, COUNT(DISTINCT pkod) darab 
+   FROM cikk, szallit
+   WHERE cikk.ckod=szallit.ckod
+   GROUP BY cikk.ckod, cnev) cikk_proj_db
+WHERE darab = (SELECT MAX(darab) FROM 
+                   (SELECT cikk.ckod ckod, cnev, COUNT(DISTINCT pkod) darab 
+                    FROM cikk, szallit
+                    WHERE cikk.ckod=szallit.ckod
+                    GROUP BY cikk.ckod, cnev) 
+               ) 
+;
+/*
+A fenti lekérdezésben kétszer kellett leírnunk ugyanazt a "nézetet" -> cikk_proj_db
+Ezt megspórolhatjuk az alábbi szintaxissal. Most is csak a lekérdezés idejére 
+jön létre a nézet.
+*/
+WITH 
+  cikk_proj_db AS (
+    SELECT cikk.ckod ckod, cnev, COUNT(DISTINCT pkod) darab 
+    FROM cikk, szallit
+    WHERE cikk.ckod=szallit.ckod
+    GROUP BY cikk.ckod, cnev)
+SELECT ckod, cnev, darab FROM cikk_proj_db
+WHERE darab = (SELECT MAX(darab) FROM cikk_proj_db);
+
+
+Vegyünk egy másik példát:
+képezzük osztályonként az összfizetést, vegyük ezen számok átlagát, és adjuk 
+meg, hogy mely osztályokon nagyobb ennél az átlagnál az összfizetés.
+
+--DROP VIEW osztaly_osszfiz;
+CREATE OR REPLACE VIEW osztaly_osszfiz 
+AS 
+SELECT onev, SUM(fizetes) ossz_fiz
+FROM dolgozo d, osztaly o
+WHERE d.oazon = o.oazon
+GROUP BY onev;
+--SELECT * FROM osztaly_osszfiz;
+
+--DROP VIEW atlag_koltseg;
+CREATE OR REPLACE VIEW atlag_koltseg 
+AS
+SELECT SUM(ossz_fiz)/COUNT(*) atlag
+FROM osztaly_osszfiz;
+--SELECT * FROM atlag_koltseg;
+
+SELECT * FROM osztaly_osszfiz
+WHERE ossz_fiz  >  (SELECT atlag FROM atlag_koltseg);
+
+-- Ugyanez WITH-del megadva:
+
+WITH
+  osztaly_osszfiz AS (
+    SELECT onev, SUM(fizetes) ossz_fiz
+    FROM dolgozo d, osztaly o
+    WHERE d.oazon = o.oazon
+    GROUP BY onev),
+  atlag_koltseg AS (
+    SELECT SUM(ossz_fiz)/COUNT(*) atlag
+    FROM osztaly_osszfiz)
+SELECT * FROM osztaly_osszfiz
+WHERE ossz_fiz  >  (SELECT atlag FROM atlag_koltseg);
+
+
+
+

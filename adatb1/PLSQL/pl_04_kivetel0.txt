@@ -1,0 +1,87 @@
+/* Kivételkezelés */
+/* A kivételek lehetnek beépített kivételek (amelyeket általában a futtató rendszer vált ki), 
+vagy felhasználói kivételek, amelyeket valamelyik programegység deklarációs részében határoztunk meg. 
+A beépített kivételeknek lehet nevük (például ZERO_DIVIDE), a felhasználói kivételeknek mindig van 
+nevük. A felhasználói kivételeket mindig explicit módon, külön utasítással kell kiváltani. 
+Ezzel az utasítással beépített kivétel is kiváltható.
+A kivételkezelõ olyan WHEN ágakból áll, amelyek név szerint kezelik a kivételeket és legutolsó ágként 
+szerepelhet egy OTHERS ág, amely minden kivételt kezel.
+Ha nincs OTHERS ág vagy nincs is kivételkezelõ, akkor a kivétel továbbadódik. A kivétel továbbadása 
+azt jelenti, hogy a programegység befejezõdik, és a futtató rendszer blokk esetén a tartalmazó blokkban, 
+alprogram esetén a hívó programegységben keres megfelelõ kivételkezelõt.
+Ha nincs több tartalmazó vagy hívó programegység, akkor a hívási környezetben egy UNHANDLED EXCEPTION 
+kivétel váltódik ki.
+Ha deklarációs részben vagy kivételkezelõben következik be egy kivétel, az azonnal továbbadódik.
+
+A kivételkezelõben használható két beépített függvény az SQLCODE és az SQLERRM. 
+Paraméter nélkül az SQLCODE a bekövetkezett kivétel kódját, az SQLERRM a hozzárendelt üzenetet 
+adja meg az NLS beállításoktól függõ nyelven. Felhasználói kivételek esetén SQLCODE értéke +1, 
+SQLERRM értéke: 'User-Defined Exception'.
+
+A STANDARD csomag tartalmaz egy RAISE_APPLICATION_ERROR eljárást, amelynek három paramétere van:
+- Az elsõ paraméter egy kivételkód –20000 és –20999 között.
+- A második paraméter egy maximum 2048 bájt hosszúságú sztring.
+- A harmadik opcionális paraméter TRUE vagy FALSE (ez az alapértelmezés). 
+TRUE esetén a hibaveremben az elsõ paraméter által megadott kód felülírja a legutolsónak bekövetkezett 
+kivétel kódját, FALSE esetén kiürül a verem és csak a most megadott kód kerül bele.
+Az eljárás hívása esetén kiváltódik a megadott felhasználói kivétel a megadott üzenettel.
+*/
+
+
+/* Az alábbi program bemutatja, hogyan kell kivételt deklarálni, és hibakódot 
+   rendelni hozzá, valamint azt, hogy a beágyazott blokk deklarációs részében 
+   elõforduló hibát csak a külsõ blokkban tudjuk elkapni és lekezelni. 
+*/
+set serveroutput on
+DECLARE
+  except1 EXCEPTION;
+  PRAGMA exception_init(except1, -20000);
+BEGIN
+  raise_application_error('-20001', 'except2');   -- 1. comment this line
+  RAISE except1;                                  -- 2. then comment this line too 
+  DECLARE
+    V NUMBER := 1/0;                              -- 3. finally change it to 1/1
+  BEGIN
+    V := 1/0;
+  EXCEPTION 
+    WHEN OTHERS THEN dbms_output.put_line('inner block');
+  END;
+EXCEPTION 
+  WHEN OTHERS THEN dbms_output.put_line(SQLCODE||' ~~~ '||sqlerrm);
+END;
+/
+first output:  -20001 ~~~ ORA-20001: except2
+second output: -20000 ~~~ ORA-20000:
+third output:  -1476 ~~~ ORA-01476: division by zero
+fourth output: inner block
+
+
+/* Az alábbi alprogram 3 különbözõ hibát is elõidéz: Oracle belsõ hibát (zero_divide),
+   felhasználó által definiált, névvel rendelkezõ hibát (except1) és hibakóddal rendelkezõ
+   de névvel nem deklarált hibát. Tegyük kommentbe az egyes sorokat, illetve a hibájukat
+   lekezelõ részt.
+   Ha alprogramban dobunk hibát a raise_application_error procedúrával, azt is 
+   le tudjuk kezelni magában az alprogramban.
+*/
+DECLARE
+  v1 NUMBER :=0;
+  FUNCTION f1 RETURN NUMBER IS
+  except1 EXCEPTION;
+  BEGIN
+    raise except1;                                    -- 1. comment this line
+    raise_application_error('-20000', 'exception1');  -- 3. finally comment this too
+    RETURN 10;
+  EXCEPTION 
+    WHEN except1 THEN RETURN 20;
+    WHEN OTHERS THEN RETURN 30;                       -- 2. then comment this too
+  END f1;
+BEGIN
+  v1 := f1; dbms_output.put_line(v1);
+EXCEPTION 
+  WHEN OTHERS THEN dbms_output.put_line(SQLCODE||' ~~~ '||sqlerrm);
+END;
+/
+first output:   20
+second output:  30
+third output:   -20000 ~~~ ORA-20000: exception1
+fourth output:  10

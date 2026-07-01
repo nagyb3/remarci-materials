@@ -1,0 +1,6 @@
+Harmadik előadás tartalma:
+
+STLC:
+- kötés, kötések matematikában
+- példa levezetések: kétszer, fgv kompozíció, hibás levezetések
+- circ is assoc

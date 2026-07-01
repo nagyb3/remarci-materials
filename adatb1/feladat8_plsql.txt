@@ -1,0 +1,88 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK9 nevû 
+két oszlopos táblát, aminek mindkét oszlopa VARCHAR2(100) típusú, majd 
+töltsük fel a következõ adatokkal (3 sorral).
+Az elsõ oszlopba kerüljön be a következõ osztályok neve: 'ACCOUNTING', RESEARCH', 'SALES',
+a második oszlopba pedig az adott osztályon elõforduló foglalkozások neveibõl összefûzött
+karakterlánc, például: 'MANAGER-PRESIDENT-CLERK'.
+Tipp: használják az alábbi get_foglalkozas() nevû függvényt.
+
+Az eddig elkészített kötelezõ feladataikat ellenõrizni tudják a következõ
+SQL lekérdezés futtatásával:
+
+SELECT object_name "TABLE", created FROM user_objects 
+WHERE object_type='TABLE' AND object_name LIKE 'GYAK%'
+ORDER BY object_name;
+===========================================================================
+
+/* SELECT ... INTO v1
+Írjunk meg egy függvényt, amelyik visszaadja egy adott fizetési kategóriába tartozó
+dolgozók átlagfizetését.
+*/
+CREATE OR REPLACE FUNCTION kat_atlag(n integer) RETURN number IS
+Tesztelés:
+SELECT kat_atlag(2) FROM dual;
+----------------------------------------------------------------
+/* SELECT ... INTO v1, v2
+Írjunk meg egy procedúrát, amelyik kiírja azon dolgozók számát és átlagfizetését,
+akiknek a belépési dátuma a paraméterül megadott nevû napon (pl. 'Hétfõ') volt.
+*/
+CREATE OR REPLACE PROCEDURE nap_atl(d varchar2) IS
+Tesztelés:
+set serveroutput on
+execute nap_atl('Csütörtök'); -- példa output: Dolgozók száma: 4, Átlag fiz: 2481,25
+
+Tippek: 1. to_char(hiredate, 'Day', 'nls_date_language=hungarian')
+        2. vigyázzunk a to_char által visszaadott nap névre, a végén szóközök lehetnek
+----------------------------------------------------------------
+/* Insert, Delete, Update 
+Írjunk meg egy procedúrát, amelyik megnöveli azoknak a dolgozóknak a fizetését, akiknek a 
+fizetési kategóriája ugyanaz, mint a procedúra paramétere. A növelés mértéke a dolgozó
+osztályában elõforduló legkisebb fizetés legyen.
+A procedúra a módosítás után írja ki a fizetések átlagát két tizedesjegyre kerekítve.
+A procedúra a kiírás után adjon ki egy ROLLBACK utasítást, hogy megmaradjanak az eredeti fizetések,
+így a procedúrát többször is futtatni tudják.
+*/
+CREATE OR REPLACE PROCEDURE kat_novel(p_kategoria NUMBER) IS 
+Tesztelés:
+set serveroutput on
+execute kat_novel(2);
+----------------------------------------------------------------
+/* Cursor (több soros SELECT)
+Írjunk meg egy procedúrát, amelyik veszi a paraméterül megadott osztály dolgozóit ábécé 
+szerinti sorrendben, és kiírja a foglalkozásaikat egy karakterláncban összefûzve.
+*/
+CREATE OR REPLACE PROCEDURE print_foglalkozas(o_nev varchar2) IS
+Tesztelés:
+set serveroutput on
+execute print_foglalkozas('ACCOUNTING');  -- példa output: MANAGER-PRESIDENT-CLERK
+----------------------------------------------------------------
+/* Cursor (több soros SELECT)
+Írjunk meg egy függvényt, amelyik veszi a paraméterül megadott osztály dolgozóit ábécé 
+szerinti sorrendben, és visszaadja a foglalkozásaikat egy karakterláncban összefûzve.
+*/
+CREATE OR REPLACE FUNCTION get_foglalkozas(o_nev varchar2) RETURN varchar2 IS
+Tesztelés:
+SELECT get_foglalkozas('ACCOUNTING') FROM dual;  -- példa output: MANAGER-PRESIDENT-CLERK
+----------------------------------------------------------------
+/* Asszociatív tömb  --> TABLE OF ... INDEX BY ...
+Írjunk meg egy procedúrát, amelyik veszi az elsõ n prímszámot (1. prímszám: 2, 2. prímszám: 3, stb.)
+és beleteszi azokat egy asszociatív tömbbe. A procedúra a végén írja ki a tömb utolsó elemét és a
+prímszámok összegét.
+*/
+CREATE OR REPLACE PROCEDURE primes(n integer) IS
+Tesztelés:
+set serveroutput on
+execute primes(100);
+----------------------------------------------------------------
+/* Cursor és asszociatív tömb 
+Írjunk meg egy procedúrát, amelyik veszi a dolgozókat ábácé szerinti sorrendben, 
+és minden páratlan sorszámú dolgozó nevét és fizetését beleteszi egy asszociatív tömbbe. 
+A procedúra a végén írja ki a tömb utolsó elõtti elemében szereplõ nevet és fizetést.
+*/
+CREATE OR REPLACE PROCEDURE curs_tomb IS
+Tesztelés:
+set serveroutput on
+execute curs_tomb();
+----------------------------------------------------------------

@@ -1,0 +1,124 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK2 nevû,
+egy oszlopos táblát, ami azok nevét tartalmazza, akik szeretik az almát
+is és a körtét is. (Lásd a SZERET relációt.)
+
+Az eddig elkészített kötelezõ feladataik meglétét ellenõrizni tudják a következõ
+SQL lekérdezés futtatásával:
+
+SELECT object_name "TABLE", created FROM user_objects 
+WHERE object_type='TABLE' AND object_name LIKE 'GYAK%'
+ORDER BY object_name;
+===========================================================================
+
+SZERET (nev, gyumolcs)  --> Arra vonatkozó információk, hogy ki milyen gyümölcsöt szeret
+----------------------
+CREATE TABLE szeret(nev VARCHAR(15), gyumolcs VARCHAR(15));
+
+NEV         GYUMOLCS
+--------------------
+Malacka     alma
+Micimackó   alma
+Malacka     körte
+Kanga       alma
+Tigris      alma
+Malacka     dinnye
+Micimackó   körte
+Tigris      körte
+
+FELADAT: adjuk meg az alábbi lekérdezéseket relációs algebrában és SQL-ben:
+=======
+
+1.  Melyek azok a gyümölcsök, amelyeket Micimackó szeret?
+2.  Melyek azok a gyümölcsök, amelyeket Micimackó nem szeret? (de valaki más igen)
+3.  Kik szeretik az almát?
+4.  Kik nem szeretik a körtét? (de valami mást igen)
+5.  Kik szeretik vagy a dinnyét vagy a körtét?
+6.  Kik szeretik az almát is és a körtét is?
+7.  Kik azok, akik szeretik az almát, de nem szeretik a körtét?
+----------- eddig volt korábban, lásd feladat1.txt
+8.  Kik szeretnek legalább kétféle gyümölcsöt?
+9.  Kik szeretnek legalább háromféle gyümölcsöt?
+10. Kik szeretnek legfeljebb kétféle gyümölcsöt?
+11. Kik szeretnek pontosan kétféle gyümölcsöt?
+
+
+Dolgozo és Osztaly táblák
+-------------------------
+Dolgozo (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)	   
+Osztaly (oazon, onev, telephely)
+--------------------------------
+10  ACCOUNTING  NEW YORK
+20  RESEARCH    DALLAS
+30  SALES       CHICAGO
+40  OPERATIONS  BOSTON
+
+CREATE TABLE osztaly(     -- információk azokról az osztályokról, ahol a dolgozók dolgoznak
+ oazon      NUMERIC(2),   -- az osztály egyedi azonosítója
+ onev       VARCHAR(14),  -- az osztály neve
+ telephely  VARCHAR(13)   -- az osztály telephelye
+);
+
+
+FELADAT: lekérdezések (relációs algebra + SQL)
+=======
+
+1.  Kik azok a dolgozók, akiknek a fizetése nagyobb, mint 2800?
+2.  Kik azok a dolgozók, akik a 10-es vagy a 20-as osztályon dolgoznak?
+3.  Kik azok, akiknek a jutaléka nagyobb, mint 600?
+4.  Kik azok, akiknek a jutaléka nem nagyobb, mint 600?
+5.  Kik azok a dolgozók, akiknek a jutaléka ismeretlen (nincs kitöltve, vagyis NULL)?
+6.  Adjuk meg a dolgozók között elõforduló foglalkozások neveit.
+7.  Adjuk meg azoknak a nevét és kétszeres fizetését, akik a 10-es osztályon dolgoznak.
+8.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+9.  Kik azok, akiknek nincs fõnöke?
+10. Kik azok a dolgozók, akiknek a nevében van 'A' betû?
+11. Kik azok a dolgozók, akiknek a nevében van két 'L' betû?
+12. Kik azok a dolgozók, akiknek a fizetése 2000 és 3000 között van?
+13. Adjuk meg a dolgozók adatait fizetés szerint növekvõ sorrendben.
+14. Adjuk meg a dolgozók adatait fizetés szerint csökkenõ, azon belül név szerinti sorrendben.
+15. Kik azok a dolgozók, akiknek a fõnöke KING? (egyelõre leolvasva a képernyõrõl) 
+----------- eddig volt korábban, lásd feladat1.txt
+16. Kik azok a dolgozók, akiknek a fõnöke KING? (nem leolvasva)
+17. Adjuk meg azoknak a fõnököknek a nevét, akiknek a foglalkozása nem 'MANAGER'. (dnev)
+18. Adjuk meg azokat a dolgozókat, akik többet keresnek a fõnöküknél.
+19. Kik azok a dolgozók, akik fõnökének a fõnöke KING?
+20. Kik azok a dolgozók, akik osztályának telephelye DALLAS vagy CHICAGO?
+21. Kik azok a dolgozók, akik osztályának telephelye nem DALLAS és nem CHICAGO?
+22. Adjuk meg azoknak a nevét, akiknek a fizetése > 2000 vagy a CHICAGO-i osztályon dolgoznak.
+23. Melyik osztálynak nincs dolgozója?
+24. Adjuk meg azokat a dolgozókat, akiknek van 2000-nél nagyobb fizetésû beosztottja.
+25. Adjuk meg azokat a dolgozókat, akiknek nincs 2000-nél nagyobb fizetésû beosztottja.
+26. Adjuk meg azokat a telephelyeket, ahol van elemzõ (ANALYST) foglalkozású dolgozó.
+27. Adjuk meg azokat a telephelyeket, ahol nincs elemzõ (ANALYST) foglalkozású dolgozó.
+28. Adjuk meg azoknak a dolgozóknak a nevét, akiknek a legnagyobb a fizetésük.
+
+Hasonlítsuk össze az alábbi lekérdezések eredményét.
+SELECT * FROM dolgozo JOIN osztaly ON 1=1;
+SELECT * FROM dolgozo, osztaly;
+SELECT * FROM dolgozo CROSS JOIN osztaly;
+
+További feladatok gyakorlásra a tankönyvbõl (feladat1_hajok.pdf)
+-------------------------------------------
+Hajoosztalyok(osztaly, tipus, orszag, agyukSzama, kaliber, vizkiszoritas)
+Hajok(nev, osztaly, felavatva)
+Csatak(nev, datum)
+Kimenetelek(hajo, csata, eredmeny)
+
+Lekérdezések
+------------
+
+a) Adjuk meg azokat a hajóosztályokat a gyártó országok nevével együtt, amelyeknek az ágyúi
+   legalább 16-os kaliberûek.
+b) Melyek azok a hajók, amelyeket 1921 elõtt avattak fel?
+c) Adjuk meg a Denmark Strait-csatában elsüllyedt hajók nevét.
+d) Az 1921-es washingtoni egyezmény betiltotta a 35000 tonnánál súlyosabb hajókat. 
+   Adjuk meg azokat a hajókat, amelyek megszegték az egyezményt. (1921 után avatták fel õket)
+e) Adjuk meg a Guadalcanal csatában részt vett hajók nevét, vízkiszorítását és ágyúi­nak a számát.
+f) Adjuk meg az adatbázisban szereplõ összes hadihajó nevét. (Ne feledjük, hogy a Hajók relációban 
+   nem feltétlenül szerepel az összes hajó!)
+!g) Adjuk meg azokat az osztályokat, amelyekbe csak egyetlenegy hajó tartozik.
+!h) Melyek azok az országok, amelyeknek csatahajóik is és cirkálóhajóik is voltak?
+!i) Adjuk meg azokat a hajókat, amelyek "újjáéledtek", azaz egyszer már megsérültek egy csatában, 
+    de egy késõbbi csatában újra harcoltak.

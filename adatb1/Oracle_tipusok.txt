@@ -1,0 +1,101 @@
+--
+-- Az Oracle néhány alapvetõ adattípusa
+--
+
+
+-- SZÁMOK --------------------------------------------------------------------
+-- number(x,y)  -- max. x jegyû szám, ebbõl y tizedesjegy. (pozitív/negatív)
+-- number(x)    -- max. x jegyû szám,  0   tizedesjeggyel. 
+-- int = integer = number(38)
+-- numeric(x,y) = number(x,y)
+-- positive és natural          -- csak PL/SQL-ben van.
+
+
+
+-- STRINGEK ------------------------------------------------------------------
+-- varchar2(17) -- String. Meg kell adni a maximális hosszát.
+-- varchar(n) = varchar2(n)
+-- Túl hosszú string értékül adása hibát eredményez.
+
+-- char(15)     -- Fix hosszúságú string.
+-- Túl hosszú ==> HIBA
+-- Túl rövid  ==> kiegészíti szóközökkel.
+
+-- A karakter literálok, pl. 'alma' --> char(n) típusúak. 
+-- Char(n) típus esetén összehasonlításkor eltekint a sorvégi szóközöktõl.    Pl: 'str' = 'str  '  (!!!)
+-- például: SELECT * FROM dolgozo WHERE 'str ' = 'str';  -> az összes sorra igaz
+
+-- varchar2 típusú adatok összehasonlításakor számít a sorvégi szóköz
+-- például: SELECT * FROM dolgozo WHERE CAST('str ' AS VARCHAR(4)) = 'str';  -> az összes sorra hamis
+
+-- Stringen belül megkülönbözteti a kis- és nagybetûket. Pl: 'str' != 'STR'
+-- Varchar2(n) esetén számít a sorvégi szóköz is.
+
+
+
+-- DÁTUM ÉS IDÕ --------------------------------------------------------------
+-- date        -- dátum, és idõ (másodperc pontossággal van tárolva)
+
+-- Mi is megváltoztathatjuk  a dátumformátumot (max 38 karakter hosszú dátum fog kiíródni):
+ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD (fmDay) HH24:MI:SS';
+ALTER SESSION SET NLS_DATE_LANGUAGE='hungarian'; -- english, american, french, german is lehetne
+SELECT sysdate FROM dual;
+SELECT to_char(sysdate, 'day') FROM dual;
+
+-- Dátumformátumok lásd dokumentáció
+
+
+-- Dátum aritmetika:
+-- Tfh. d, d1, d2 egy-egy date típusú objektum (pl. egy-egy tábla oszlopa).
+-- d+1                    -- d-hez képest holnap ilyenkor
+-- d-2                    -- d-hez képest tegnap elõtt ilyenkor
+-- sysdate+7              -- egy hét múlva ilyenkor
+-- d+1/24                 -- d-hez képest egy óra múlva
+-- d2-d1                  -- d1 és d2 közt eltelt idõ napokban
+-- (d2-d1)*24*60*60       -- d1 és d2 közt eltelt idõ másodpercekben
+-- months_between(d2,d1)  -- d1 és d2 közt eltelt idõ hónapokban
+-- Az utóbbi három esetben pozitív illetve negatív eredményt is kaphatunk.
+-- d2 > d1  =>  (+)
+-- d2 < d1  =>  (-)
+
+-- TIMESTAMP -- dátum és idõ, törtmásodperceket is tárol
+
+SELECT SYSTIMESTAMP FROM DUAL;     -- idõzónával (Time Zone), lásd NLS_TIMESTAMP_TZ_FORMAT beállítást
+-- 20-APR-08 11.53.17,384707000 +02:00  
+SELECT CURRENT_TIMESTAMP FROM DUAL;
+-- 20-APR-08 11.53.55,229284000 EUROPE/PRAGUE
+SELECT LOCALTIMESTAMP FROM DUAL;   -- idõzóna nélkül (without Time Zone)
+-- 20-APR-08 11.54.13,646841000
+SELECT TO_CHAR(SYSTIMESTAMP,'YYYY.MM.DD.HH24:MI:SS.FF TZH:TZM') FROM dual; -- using explicit Format Mask
+-- 2020.04.08.11:57:50.274611 +02:00
+SELECT TO_CHAR(SYSTIMESTAMP,'SSSSS.FF') FROM dual;  -- éjfél óta eltelt másodpercek
+
+-- További dátumfüggvények, lásd dokumentáció
+
+
+
+-- konverzió -----------------------------------------------------------------
+-- to_date('2030-OCT-28')         -- NLS_DATE_FORMAT alapján konvertálja
+-- to_date('2030-12','YYYY-MM')   -- formátum megadása  =>  2030-12-01 0:00.00
+-- Amit nem adunk meg, az default érték lesz.
+-- Default dátum: folyó év, folyó hó, elseje, éjfél
+-- to_date(2462803,'J')           -- Julianus naptár 2462803-adik napja, éjfél
+-- to_char(datum)                 -- NLS_DATE_FORMAT alapján állítja elõ
+-- to_char(datum, 'HH24:MI:SS')   -- formátum alapján állítja elõ a stringet
+-- to_char(127.14)                -- szám   -> string
+-- to_number('135.00167')         -- string -> szám
+-- to_number('abc')               -- Error: ORA-01722: invalid number
+
+
+-- Nincs boolean típus  (PL/SQL-ben van, értékei: TRUE, FALSE, NULL)
+
+-- Bármilyen típusú oszlopban lehet NULL (kitöltetlen cella).
+-- Két NULL soha sem egyenlõ, de az sem igaz rájuk, hogy nem egyenlõk (<>).
+-- Annak vizsgálata, hogy valami NULL-e:
+--  x IS NULL
+--  x IS NOT NULL
+
+-- pl.
+SELECT * FROM   dolgozo WHERE jutalek IS NOT NULL;
+
+

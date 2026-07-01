@@ -1,0 +1,137 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK1 nevû 
+táblát, aminek a tartalma azonos a NIKOVITS.SZERET tábláéval.
+Határidõ: kivételesen a következõ gyakorlat kezdete, hátha valaki még csoportot váltott az elsõ héten.
+
+A feladat célja, hogy mindenki be tudjon jelentkezni mindkét adatbázisba
+és ott SQL utasításokat tudjon lefuttatni.
+Ha valaki technikai problémába ütközik, emailben vagy konzultáció keretében
+kérjen segítséget a gyakorlatvezetõtõl.
+===========================================================================
+Az alábbiakban hasznos információkat és megoldandó feladatokat találnak.
+A ténylegesen megoldandó feladatokat a FELADAT szó után találják (több helyen is).
+
+Egyszerû SQL utasítások (lekérdezések) futtatása
+------------------------------------------------
+
+Az alábbi táblák a nikovits felhasználó tulajdonában vannak létrehozva, 
+de minden hallgatónak van joga lekérdezni azokat. Ha egy másik felhasználó
+tábláit kérdezzük le, akkor a tábla neve elé kell írni a tulajdonos nevét 
+és egy pontot, így:
+------->              nikovits.dolgozo
+
+A legalapvetõbb mûveletek egy táblával (relációval) kapcsolatban a következõk.
+------------------------------------------------------------------------------
+CREATE TABLE táblanév     -> létrehoz egy táblát.
+INSERT INTO táblanév      -> egy vagy több sort szúr be a táblába.
+DELETE FROM táblanév      -> egy vagy több sort töröl a táblából.
+UPDATE táblanév           -> egy vagy több sorban értékeket módosít.
+DROP TABLE táblanév       -> megszünteti (eldobja) a táblát a tartalmával együtt.
+SELECT ... FROM táblanév  -> adatokat kér le a táblából.
+
+Az elsõ példatáblánk, és annak oszlopai (attribútumai):
+-------------------------------------------------------
+DOLGOZO (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+
+A tábla az alábbi adatokat tárolja:
+
+dkod    dnev  foglalkozas fonoke  belepes   fizetes  jutalek  oazon
+---------------------------------------------------------------------------
+7369	SMITH	CLERK      7902  1980-12-17   800             20
+7499	ALLEN	SALESMAN   7698  1981-02-20  1600      300    30
+7521	WARD	SALESMAN   7698	 1981-02-22  1250      500    30
+7566	JONES	MANAGER    7839	 1981-04-02  2975             20
+7654	MARTIN	SALESMAN   7698	 1981-09-28  1250     1400    30
+7698	BLAKE	MANAGER    7839	 1981-05-01  4250             30
+7782	CLARK	MANAGER    7839	 1981-06-09  2450      200    10
+7788	SCOTT	ANALYST    7566	 1982-12-09  3000             20
+7839	KING	PRESIDENT        1981-11-17  5000             10
+7844	TURNER	SALESMAN   7698	 1981-09-08  1500       10    30
+7876	ADAMS	CLERK      7788	 1983-01-12  1100             20
+7900	JAMES	CLERK      7698	 1981-12-03   950             30
+7902	FORD	ANALYST    7566	 1981-12-03  3000      700    20
+7934	MILLER	CLERK      7782	 1982-01-23  1300      600    10
+
+CREATE TABLE dolgozo(                
+ dkod          NUMERIC(4),
+ dnev          VARCHAR(10),
+ foglalkozas   VARCHAR(9),
+ fonoke        NUMERIC(4),
+ belepes       DATE,
+ fizetes       NUMERIC(7,2),
+ jutalek       NUMERIC(7,2),
+ oazon         NUMERIC(2)
+);                                   -- egy fenti szerkezetû üres táblát hoz létre
+GRANT SELECT ON dolgozo TO public;   -- mindenkinek olvasási jogot ad a táblára
+SELECT * FROM nikovits.dolgozo;      -- lekérdezi az összes sort a táblából
+
+INSERT INTO DOLGOZO                  -- így lehet majd feltölteni a táblát sorokkal (lásd késõbb)
+VALUES (7369, 'SMITH', 'CLERK', 7902, TO_Date('1980.12.17', 'YYYY.MM.DD'), 800, NULL, 20); 
+
+A fenti utasításban figyeljük meg, hogyan lehet dátum típusú értéket elõállítani!
+
+-- DROP TABLE dolgozo;  -- ez megszünteti (eldobja) a táblát teljes tartalmával együtt
+
+Táblák létrehozása
+------------------
+Hozzunk létre egy olyan táblát, amelynek sémája és tartalma megegyezik a NIKOVITS.DOLGOZO
+tábláéval. 
+CREATE TABLE dolgozo AS SELECT * FROM nikovits.dolgozo;
+
+Dobjuk el a táblát. (Töröljük ki az adatbázisból.)
+DROP table dolgozo;
+
+Hozzunk létre egy olyan táblát, amelynek sémája megegyezik az elõzõvel, de a tábla üres.
+CREATE TABLE dolgozo AS SELECT * FROM nikovits.dolgozo WHERE 1=2;
+
+FELADAT: adjuk meg az alábbi lekérdezéseket SQL nyelven + relációs algebrában (ahol lehet).
+=======
+
+1.  Kik azok a dolgozók, akiknek a fizetése nagyobb, mint 2800?
+2.  Kik azok a dolgozók, akik a 10-es vagy a 20-as osztályon dolgoznak?
+3.  Kik azok, akiknek a jutaléka nagyobb, mint 600?
+4.  Kik azok, akiknek a jutaléka nem nagyobb, mint 600?
+5.  Kik azok a dolgozók, akiknek a jutaléka ismeretlen (nincs kitöltve, vagyis NULL)?
+6.  Adjuk meg a dolgozók között elõforduló foglalkozások neveit.
+7.  Adjuk meg azoknak a nevét és kétszeres fizetését, akik a 10-es osztályon dolgoznak.
+8.  Kik azok a dolgozók, akik 1982.01.01 után léptek be a céghez?
+9.  Kik azok, akiknek nincs fõnöke?
+10. Kik azok a dolgozók, akiknek a nevében van 'A' betû?
+11. Kik azok a dolgozók, akiknek a nevében van két 'L' betû?
+12. Kik azok a dolgozók, akiknek a fizetése 2000 és 3000 között van?
+13. Adjuk meg a dolgozók adatait fizetés szerint növekvõ sorrendben.
+14. Adjuk meg a dolgozók adatait fizetés szerint csökkenõ, azon belül név szerinti sorrendben.
+15. Kik azok a dolgozók, akiknek a fõnöke KING? (egyelõre leolvasva a képernyõrõl) 
+
+Egy következõ példatábla:
+-------------------------
+SZERET (nev, gyumolcs)
+
+CREATE TABLE szeret(nev VARCHAR(15), gyumolcs VARCHAR(15));
+
+NEV         GYUMOLCS
+--------------------
+Malacka     alma
+Micimackó   alma
+Malacka     körte
+Kanga       alma
+Tigris      alma
+Malacka     dinnye
+Micimackó   körte
+Tigris      körte
+
+FELADAT: adjuk meg az alábbi lekérdezéseket relációs algebrában és SQL-ben:
+=======
+
+1.  Melyek azok a gyümölcsök, amelyeket Micimackó szeret?
+2.  Melyek azok a gyümölcsök, amelyeket Micimackó nem szeret? (de valaki más igen)
+3.  Kik szeretik az almát?
+4.  Kik nem szeretik a körtét? (de valami mást igen)
+5.  Kik szeretik vagy a dinnyét vagy a körtét?
+6.  Kik szeretik az almát is és a körtét is?
+7.  Kik azok, akik szeretik az almát, de nem szeretik a körtét?
+
+
+
+

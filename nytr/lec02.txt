@@ -1,0 +1,7 @@
+Második előadás tartalma:
+- követelmények ismétlése, vizsgán mit lehet használni (semmit)
+- irodalom
+- Razor még egyszer, AST, levezetési szabályok, program futtatása
+- egyenlőségi/logikai konzisztencia
+- kiegészítjük függvényekkel, szabályok
+- konstruktor, destruktor, beta, eta, csoportosítás

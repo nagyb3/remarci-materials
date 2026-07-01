@@ -1,0 +1,131 @@
+Adatbázisok 1. gyakorlat tematika 2023/2024 tavaszi félév, 19. és 20. csoport
+=============================================================================
+Az adott órán megoldandó kötelezõ feladat az órai feladatok között található.
+Aki az összes kötelezõ feladatot határidõben megoldja, mindkét zh-n plusz pontokat kap.
+
+1. gyakorlat
+------------
+===> Órai feladatok: feladat1.txt
+Követelmények ismertetése. (ab1_kovetelmeny.txt)
+A relációs adatmodell. Alapfogalmak: reláció, tábla, sor, oszlop, attribútum, séma, elõfordulás.
+Az Adatbáziskezelõ rendszer (ABKR) komponensei, a kliens és a szerver. Kapcsolódás az adatbázishoz.
+Információk -> http://people.inf.elte.hu/nikovits/adatbazis_eleres.txt
+Az adatbázisok elérése az ELTE-n kívülrõl -> ssh_help.txt, ssh_tunnel.pdf, ssh_SqlDeveloper.pdf
+SQL utasítások futtatása. (SQL01_bevezetes.pdf)
+Adatok lekérdezése, lekérdezõ nyelvek: SQL. (SQL02_select_alap.pdf)
+NULL érték; 3 értékû logika (SQL03_where_feltetel.pdf)
+A SZERET relációra és a DOLGOZO relációra vonatkozó egyszerû lekérdezések. 
+
+2. gyakorlat
+------------
+===> Órai feladatok: feladat2.txt
+Lekérdezések megadása relációs algebrában és SQL-ben. (SQL04_set_operators.pdf)
+Alapmûveletek és származtatott mûveletek. A Descartes szorzat 
+és a természetes összekapcsolás kifejezése a másik segítségével. 
+A Dolgozo, Osztaly táblákra vonatkozó lekérdezések.
+SELECT-FROM-WHERE + halmazmûveletek.
+A relációs algebra, mint lekérdezõnyelv.
+A relációs algebrai mûveletek: vetítés, kiválasztás, halmazmûveletek, szorzat, összekapcsolások.
+(UW_24_RelAlg.pdf)
+A RelaX felülettel kapcsolatos segédanyagok: (Relax*.*)
+További gyakorlásra szolgáló feladatok: Hajok, Csatak, Kimenetelek, Hajoosztalyok 
+(feladat1_hajok.pdf)
+
+Relációs algebra kalkulátor -> RelaX
+--------------------------------------
+https://dbis-uibk.github.io/relax/calc/local/uibk/
+
+3. gyakorlat
+------------
+===> Órai feladatok: feladat3.txt
+A korábbi feladatok megoldása relációs algebrában a RelaX felületen.
+A relációs algebra és az SQL kapcsolata. (UW_relAlg_SQL.pdf)
+Az Oracle által ismert adattípusok. (Oracle_tipusok.txt)
+Beépített függvények használata. (SQL05_fuggvenyek.pdf)
+A legfontosabb Oracle függvények. (Oracle_fv.pdf)
+Az összes Oracle függvény -> dokumentáció: Oracle Database SQL Language Reference 
+
+4. gyakorlat
+------------
+===> Órai feladatok: feladat4.txt
+Csoportképzés, csoportok szûrése GROUP BY, HAVING. (SQL06_csoportok.pdf)
+A kiterjesztett relációs algebra mûveletei. Multihalmazok, kiterjesztett vetítés, 
+ismétlõdések megszüntetése, csoportok képzése, rendezés.
+(UW_51_Multihalmaz.pdf, UW_52_kiterj_alg.pdf)
+A fentiek kifejezése kiterjesztett relációs algebrában és SQL-ben. 
+(UW_relAlg_SQL2.pdf, Rel_algebra_help.pdf)
+
+5. gyakorlat
+------------
+===> Órai feladatok: feladat5.pdf
+JOIN mûveletek fajtái, külsõ join (SQL07_osszekapcsolas.pdf). 
+Alkérdések (SQL08_alkerdes1.pdf, SQL08_alkerdes2.pdf)
+Relációs algebrai mûveletek összefoglalása. (Rel_algebra_help.pdf)
+Nehezebb relációs algebrai és SQL feladatok.
+
+6. gyakorlat
+------------
+===> Órai feladatok: feladat6_DML.txt és feladat6b.txt
+Alkérdések és nézettáblák kapcsolata, a WITH utasítás. (nezet_peldak.txt)
+Külsõ join és néhány egyéb Oracle specialitás. (Kulso_join.pdf)
+A táblák adatainak módosítása. 
+Az SQL nyelv DML (Data Manipulation Language) utasításai:
+INSERT, DELETE, UPDATE utasítások.
+Tranzakciókezelés az adatbázisban. (SQL09_DML.pdf)
+További gyakorló feladatok újabb táblákra. (feladat_gyakorlo.txt)
+
+7. gyakorlat  <-- 1. zh (a zh pontos dátuma: a tavaszi szünet utáni elsõ gyakorlat)
+------------
+A zh-ban az elsõ 6 gyakorlaton szereplõ feladatokhoz hasonlóak lesznek.
+SQL utasítások futtatása Oracle környezetben (mindenki ellenõrizze a jelszavát mindkét adatbázisban),
+relációs algebrai lekérdezések megadása a RelaX felületen, relációs algebrai kifejezések eredményének
+kiszámítása papíron, lekérdezések átalakítása SQL és relációs algebra között.
+
+8. gyakorlat
+------------
+===> Órai feladatok: feladat7_plsql.txt
+ZH feladatok és javítási lehetõségek megbeszélése.
+A PL/SQL nyelv alapjai és legfontosabb konstrukciói. 
+A programblokk szerkezete, blokkok egymásba ágyazása, deklaráció, érvényesség, változók, 
+képernyõre írás, adatok bekérése a felhasználótól, függvények, procedúrák.
+Segédanyagok -> lásd http://people.inf.elte.hu/nikovits/AB1/PLSQL (pl_*.txt, PLSQL*.pdf)
+Oracle dokumentáció -> Database PL/SQL Language Reference címû könyv.
+Hogyan lõjük ki a saját beragadt session-ünket? Lásd pl_00_peldak.txt               <--- Fontos információ
+
+9. gyakorlat
+-------------
+===> Órai feladatok: feladat8_plsql.txt
+A PL/SQL nyelv további lehetõségei.
+(SQL utasítások a pl/sql programban, SELECT, INSERT, DELETE, UPDATE, tranzakciókezelés, 
+kurzor használata, rekord, asszociatív tömb.)
+ 
+10. gyakorlat
+-------------
+===> Órai feladatok: feladat9_plsql.txt
+A PL/SQL nyelv további lehetõségei.
+(Módosítás kurzor sorain végighaladva, hiba és kivételkezelés.)
+WITH utasítás sorainak feldolgozása kurzorral. (pl_03_kurzor.txt)
+
+11. gyakorlat
+-------------
+===> Órai feladatok: feladat10_plsql.txt
+Rekurzív lekérdezések megadása Oracle-ben: 
+START WITH és CONNECT BY (SQL_12_connect_by.pdf, ab1_connect_by.txt).
+PL/SQL gyakorlás, az eddigiek átismétlése. Kérdések megválaszolása a zh elõtt.
+
+12. gyakorlat <-- 2. zh (a zh pontos dátuma: ... )
+-------------
+A zh-n csak plsql programok lesznek, procedúrák, illetve függvények.
+A feladatok hasonlóak lesznek a 7-10 feladatsorokban szereplõkhöz.
+2 feladat megoldása elegendõ a 2-es jegyhez, 3 feladat a 3-ashoz, stb. Részpontszám csak 
+kivételes esetben szerezhetõ, ha az alprogram outputja kis hibát tartalmaz. 
+Olyan program, amely nem fut le, 0 pontot ér.
+A feladatokból 1 a honlapomra feltett pl/sql feladatokból lesz kiválasztva (7-10 feladatsorok)
+mindenféle változtatás nélkül. Aki tehát ezeket a feladatokat még a zh elõtt megoldja, 
+már 1 megoldott feladatról indul.
+
+
+
+
+
+

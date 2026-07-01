@@ -1,0 +1,133 @@
+-- Join muveletek osszefoglalasa
+--
+-- Osztaly, Dolgozo tablak
+TYPES
+    Cross join
+	Self join
+    Natural join
+    [Inner] Join
+     	Using clause
+     	On clause
+	  Equi join
+      Non-equi join
+	Outer join 
+		Left outer 
+		Right outer 
+		Full outer 
+    Semi join
+    Anti join    
+--
+-- CROSS JOIN
+select * 
+ from dolgozo, osztaly;
+-- vagy
+select * 
+ from dolgozo CROSS JOIN osztaly;
+--
+-- NATURAL JOIN
+select * 
+ from dolgozo NATURAL JOIN osztaly;
+--
+-- Ezzel üzleti tartalomra ekvivalens
+-- EQUI JOIN
+---- EQUI JOIN/Direkt szorzattal
+select * 
+ from dolgozo d,osztaly o 
+ where d.oazon=o.oazon;
+--vagy
+select * 
+ from dolgozo d CROSS JOIN osztaly o 
+ where d.oazon=o.oazon;
+--
+-- EQUI JOIN USING hasznalataval
+select * 
+ from dolgozo join osztaly using(oazon);
+--
+-- EQUI JOIN ON hasznalataval
+select * 
+ from dolgozo d join osztaly o on(d.oazon=o.oazon);
+--
+-- NON-EQUI JOIN
+select * 
+ from dolgozo d join osztaly o on(d.oazon!=o.oazon); -- üzleti ertelme nincs
+--
+select * 
+ from dolgozo,fiz_kategoria 
+ where fizetes BETWEEN also AND felso;
+--
+--
+-- Kulso osszekapcsolasok (OUTER JOIN), peldaul bal oldalira
+select * 
+ from dolgozo d,osztaly o 
+ where d.oazon=o.oazon (+);
+--vagy
+select * 
+ from dolgozo left join osztaly using(oazon);
+ --vagy
+ select * 
+ from dolgozo d left outer join osztaly o on(d.oazon=o.oazon);
+--
+-- Ugyanezek mukodnek RIGHT JOIN-ra is.
+-- Mindket oldalira is: csak a FULL OUTER JOIN hasznalhato a (+) forma nem!
+--
+-- SELF JOIN
+select *
+from dolgozo d1, dolgozo d2
+where d1.fonoke=d2.dkod;
+--
+-- SEMI JOIN
+A bal oldali tábla azon sorait adja vissza (egyszeresen), 
+amelyekhez létezik legalább egy megfelelõ sor a jobb oldali táblában.
+-- ANTI JOIN
+A bal oldali tábla azon sorait adja vissza (egyszeresen), 
+amelyhez nem létezik egyetlen megfelelõ sor sem a jobb oldali táblában.
+--
+-- SEMI és ANTI JOIN megvalósítása ORACLE-ben
+--
+-- dolgozo SEMIJOIN osztaly
+--
+SELECT   d.*  
+        FROM     dolgozo d 
+        WHERE    EXISTS  
+                 (  
+                 SELECT 1  
+                 FROM   osztaly o 
+                 WHERE o.oazon = d.oazon  
+                 )  
+        ORDER BY d.oazon;  
+--
+-- osztaly SEMIJOIN dolgozo 
+--
+SELECT   o.*  
+        FROM     osztaly o  
+        WHERE    EXISTS  
+                 (  
+                 SELECT 1  
+                 FROM   dolgozo d  
+                 WHERE d.oazon = o.oazon  
+                 )  
+        ORDER BY o.oazon;  
+--
+-- dolgozo ANTIJOIN osztaly
+--
+SELECT   d.*  
+        FROM     dolgozo d 
+        WHERE    NOT EXISTS  
+                 (  
+                 SELECT 1  
+                 FROM   osztaly o 
+                 WHERE o.oazon = d.oazon  
+                 )  
+        ORDER BY d.oazon;  
+--
+-- osztaly ANTIJOIN dolgozo
+--
+SELECT   o.*  
+        FROM     osztaly o  
+        WHERE    NOT EXISTS  
+                 (  
+                 SELECT 1  
+                 FROM   dolgozo d  
+                 WHERE d.oazon = o.oazon  
+                 )  
+        ORDER BY o.oazon;  

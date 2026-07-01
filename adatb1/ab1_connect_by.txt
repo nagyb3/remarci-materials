@@ -1,0 +1,223 @@
+Hierarchikus (rekurzív) lekérdezések  (START WITH, CONNECT BY)
+------------------------------------
+
+SELECT ... FROM ... WHERE ...
+START WITH feltétel
+CONNECT BY feltétel
+
+Ez a lehetõség arra való, hogy hierarchikus szerkezetû adatokat is le tudjunk kérdezni 
+egy SELECT utasítás segítségével. A hierarchia gyökerét (gyökereit) a START WITH -del 
+kell megadni. A szülõ és gyermek sorok közti kapcsolatot a CONNECT BY feltétel résszel. 
+Ebben használnunk kell a PRIOR kulcsszót, amelyik a szülõ sorra utal (lásd alább). 
+Az ilyen jellegû lekérdezések esetén a kiértékelés sorrendje a következõ:
+
+1. A START WITH alapján kiválasztja a gyökér sorokat.
+
+2. A CONNECT BY alapján a gyökerek gyerekeit választja ki.
+
+3. A további leszármazottakat választja ki mélységi keresési stratégiával.
+
+4. A WHERE alapján kiszûri a sorokat, de az eldobott sorok leszármazottait nem dobja el. 
+   Vagyis a feltételt minden egyes sorra külön-külön értékeli ki.
+
+5. A sorokat a preorder bejárás szerinti sorrendben adja vissza.
+
+Ha egy SELECT hierarchikus struktúrát kérdez le, akkor korlátozottan használhat join mûveletet.
+
+A CONNECT BY után akár több feltételt is használhatunk. De ha kört talál a struktúrában akkor hibát ad.
+pl.  CONNECT BY PRIOR dkod = fonoke AND fizetes > jutalek
+Itt a dkod a szülõ sorra vonatkozik, a többi a gyerek sorra.
+
+A PRIOR unáris operátor
+-----------------------
+Amikor egy szülõ-gyerek csomópont párt (sor párt) vizsgál a bejárás során, a PRIOR-ral hivatkozott 
+oszlopok a szülõ csomópontra vonatkoznak. A CONNECT BY feltételben kötelezõ használnunk legalább
+egy helyen a PRIOR kulcsszót, egyébként nem tudnánk a szülõ-gyerek viszonyt kifejezni a csomópontok
+között.
+
+LEVEL pszeudo oszlop
+--------------------
+Hierarchikus (CONNECT BY) lekérdezésekben használhatjuk a LEVEL pszeudo oszlopot, 
+amelyik a gyökér sorokra 1-et ad vissza, a többiekre, pedig a megfelelõ mélységet.
+
+Példa:
+------
+SELECT   LPAD(' ', 2*(LEVEL-1)) || dnev, dkod, fonoke, foglalkozas, LEVEL
+FROM nikovits.dolgozo
+START WITH   foglalkozas='PRESIDENT'
+CONNECT BY  PRIOR dkod = fonoke;
+
+Testvérek rendezése:
+ORDER BY  -> SIBLINGS [NULLS FIRST | NULLS LAST] 
+
+Példa:
+------
+SELECT   LPAD(' ', 2*(LEVEL-1)) || dnev, dkod, fonoke, foglalkozas, LEVEL
+FROM nikovits.dolgozo
+START WITH   foglalkozas='PRESIDENT'
+CONNECT BY  PRIOR dkod = fonoke
+ORDER SIBLINGS BY dnev;  --  [NULLS FIRST | LAST]
+
+
+Adjuk meg a NIKOVITS.VAGYONOK tábla alapján KAIN unokáinak az össz-vagyonát.
+
+SELECT   SUM(vagyon) -- LPAD(' ', 2*(LEVEL-1)) || nev, apja, vagyon
+FROM nikovits.vagyonok
+WHERE LEVEL = 3
+START WITH  nev='KAIN'
+CONNECT BY  PRIOR nev = apja;
+
+
+Hasonlítsuk össze az alábbi lekérdezéseket és figyeljük meg a PRIOR szerepét!
+
+-- ABEL összes leszármazottja
+SELECT    LPAD(' ', 4*(LEVEL-1)) || nev, apja, vagyon
+FROM nikovits.vagyonok
+WHERE nev like '%%'
+START WITH  nev='ABEL'
+CONNECT BY  PRIOR nev = apja;
+
+-- ABEL azon leszármazottai, akik felmenõinek nevében van 'A' betû
+-- mielõtt egy újabb csomópontot bejár, megnézi, hogy az új csomópont szülõjében van-e 'A' betû.
+SELECT    LPAD(' ', 4*(LEVEL-1)) || nev, apja, vagyon
+FROM nikovits.vagyonok
+WHERE nev like '%%'
+START WITH  nev='ABEL'
+CONNECT BY  PRIOR nev = apja and prior nev like '%A%';
+
+-- Akik nevében és összes felmenõjének nevében van 'A' betû
+-- mielõtt egy újabb csomópontot bejár, megnézi, hogy az új csomópontban van-e 'A' betû.
+SELECT    LPAD(' ', 4*(LEVEL-1)) || nev, apja, vagyon
+FROM nikovits.vagyonok
+WHERE nev like '%%'
+START WITH  nev='ABEL'
+CONNECT BY  PRIOR nev = apja and nev like '%A%';
+
+
+A CONNECT_BY_ROOT operátor
+--------------------------
+A bejárás során bármelyik szinten hivatkozhatunk vele a gyökér csomópont (sor) egy oszlopára.
+
+Példa:
+------
+Azokat kérdezzük le a hierarchiában, akik városa azonos ADAM városával.
+
+SELECT  LPAD(' ', 2*(LEVEL-1)) || nev, apja, varos, CONNECT_BY_ROOT varos
+FROM nikovits.vagyonok
+WHERE varos = CONNECT_BY_ROOT varos
+START WITH  nev='ADAM'
+CONNECT BY  PRIOR nev = apja;
+
+
+A SYS_CONNECT_BY_PATH függvény: SYS_CONNECT_BY_PATH(oszlop, char)
+----------------------------------------------------------------
+A SYS_CONNECT_BY_PATH összefûzi a csomópontok (sorok) adott oszlopát a hierarchia mentén
+a gyökértõl az adott csomópontig. Elválasztó karakterláncként a második paraméter szolgál.
+
+Példa:
+------
+SELECT  nev, SYS_CONNECT_BY_PATH(nev,'.'), SYS_CONNECT_BY_PATH(varos,'.')
+FROM nikovits.vagyonok
+START WITH  nev='ADAM'
+CONNECT BY  PRIOR nev = apja;
+
+
+Az eddigi (fenti) rekurziv lekérdezések csak akkor mûködnek, ha nincs kör a gráfban,
+vagyis az fa szerkezetû. (összefüggõ, körmentes gráf -> fa)
+Ha kör van, akkor hibaüzenetet kapunk.
+
+Ezt elkerülhetjük ha a lekérdezésbe beleírjuk a NOCYCLE kulcsszót (lásd alább), ekkor 
+a végrehajtás nem hibaüzenetet ad, ha korábban már feldolgozott csomópontot (sort) talál,
+hanem azon az ágon nem folytatja a feldolgozást. 
+
+Egy érdekes példa az alábbi:
+----------------------------
+SELECT LTRIM(SYS_CONNECT_BY_PATH (r2,','),',')  -- az elsõ vesszõt levágjuk
+FROM (SELECT ROWNUM r, dnev r2 FROM dolgozo)
+WHERE CONNECT_BY_ISLEAF = 1                     -- csak a levelek maradnak meg
+START WITH r = 1 CONNECT BY r = PRIOR r + 1;
+
+
+Egy másik példatábla, amelyben repülõgép járatok vannak.
+--------------------------------------------------------
+
+CREATE TABLE jaratok(legitarsasag VARCHAR2(10), honnan VARCHAR2(15), hova VARCHAR2(15), koltseg NUMBER);
+
+INSERT INTO jaratok VALUES('Lufthansa', 'San Francisco', 'Denver', 1000);
+INSERT INTO jaratok VALUES('Lufthansa', 'San Francisco', 'Dallas', 10000);
+INSERT INTO jaratok VALUES('Lufthansa', 'Denver', 'Dallas', 500);
+INSERT INTO jaratok VALUES('Lufthansa', 'Denver', 'Chicago', 2000);
+INSERT INTO jaratok VALUES('Lufthansa', 'Dallas', 'Chicago', 600);
+INSERT INTO jaratok VALUES('Lufthansa', 'Dallas', 'New York', 2000);
+INSERT INTO jaratok VALUES('Lufthansa', 'Chicago', 'New York', 3000);
+INSERT INTO jaratok VALUES('Lufthansa', 'Chicago', 'Denver', 2000);
+
+-- Az alábbi törlés megszünteti a kört a gráfban, azután már mûködik 
+-- a korábbi START WITH, CONNECT BY típusú lekérdezés.
+
+delete from jaratok where honnan='Chicago' and hova='Denver';
+
+Példa:
+------
+Adjuk meg, hogy mely városokba lehet eljutni San Franciscoból.
+
+SELECT LPAD(' ', 4*level) ||honnan, hova, level-1 Atszallasok
+FROM nikovits.jaratok 
+START WITH honnan = 'San Francisco'
+CONNECT BY PRIOR hova = honnan;
+
+Ha azonban az utolsó sort nem töröljük ki, akkor kör van a gráfban, és ekkor 
+bele kell írnunk a NOCYCLE kulcsszót a lekérdezésbe.
+
+SELECT LPAD(' ', 2*level) ||honnan, hova, level-1 Atszallasok
+FROM nikovits.jaratok 
+START WITH honnan = 'San Francisco'
+CONNECT BY NOCYCLE PRIOR hova = honnan;
+
+További pszeudo oszlopok:
+
+CONNECT_BY_ISCYCLE: 1-et ad vissza az aktuális sorra, ha annak van olyan gyermeke, aki õse is.
+CONNECT_BY_ISLEAF:  1-et ad vissza az aktuális sorra, ha annak nincs gyermeke (levél a fában),
+                    illetve csak olyan gyermeke van, amit már korábban bejárt.
+Példa:
+------
+SELECT LPAD(' ', 2*level) ||honnan, hova, level-1 Atszallasok,
+  CONNECT_BY_ISCYCLE, CONNECT_BY_ISLEAF
+FROM nikovits.jaratok 
+START WITH honnan = 'San Francisco'
+CONNECT BY NOCYCLE PRIOR hova = honnan;
+
+
+Példa:
+------
+Listázzuk ki a teljes útvonalakat San Franciscoból.
+A csomópontok honnan oszlopait fûztük össze a gyökértõl végig a csomópontig, és az utolsó 
+csomópont hova oszlopát is a végéhez fûztük.
+
+SELECT CONNECT_BY_ROOT honnan AS indulas, hova AS cel, LEVEL, 
+       SYS_CONNECT_BY_PATH(honnan, '->')||'->'||hova "Utvonal"
+FROM nikovits.jaratok
+START WITH honnan='San Francisco'
+CONNECT BY NOCYCLE PRIOR hova = honnan
+ORDER BY LEVEL;
+
+
+Adjuk meg, hogy mely városokból mely városokba lehet eljutni akár több lépésben. (indulás, cél)
+--------------------------------------------------------------------------------
+SELECT distinct CONNECT_BY_ROOT honnan AS indulas, hova AS cel
+FROM nikovits.jaratok
+WHERE CONNECT_BY_ROOT honnan <> hova       -- a végpont ne legyen azonos a kezdõponttal
+START WITH 1=1                             -- minden csomópontból elindítjuk a bejárást
+CONNECT BY NOCYCLE PRIOR hova = honnan
+ORDER BY indulas, cel;
+
+
+Adjuk meg a nikovits.vagyonok tábla alapján a Leszarmazott(õs, utód, fok) relációt,
+ahol a fok a leszármazás fokát jelenti. (gyermek = 1, unoka = 2, stb.)
+----------------------------------------------------------------------------
+SELECT  DISTINCT CONNECT_BY_ROOT apja os, nev utod, level fok
+FROM nikovits.vagyonok
+WHERE CONNECT_BY_ROOT apja<>'NINCS'    -- ADAM-nak nincs valódi személy apja, ezért ezeket a sorokat kihagyjuk
+START WITH  1=1                        -- minden csomópontból elindítjuk a bejárást
+CONNECT BY  PRIOR nev = apja
+ORDER BY os, fok;

@@ -1,0 +1,92 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK4 nevû 3 oszlopos
+táblát, ami osztályonként tartalmazza az osztály azonosítóját, telephelyét és 
+az ott dolgozók átlagfizetését. (Oazon, Telephely, AtlagFiz) 
+Határidõ: a gyakorlat napján 23:59
+
+Az eddig elkészített kötelezõ feladataik meglétét ellenõrizni tudják a következõ
+SQL lekérdezés futtatásával:
+
+SELECT object_name "TABLE", created FROM user_objects 
+WHERE object_type='TABLE' AND object_name LIKE 'GYAK%'
+ORDER BY object_name;
+===========================================================================
+
+Összesítõ függvények, csoportok képzése
+---------------------------------------
+
+-- Vizsgáljuk meg az alábbi lekérdezések eredményét és az összesítõ 
+-- függvények viselkedését duplikátumok és NULL értékek elõfordulása esetén.
+
+SELECT dnev, fizetes, jutalek FROM dolgozo WHERE dnev LIKE '%O%' AND oazon < 50;
+dnev  fizetes jutalek
+--------------------
+JONES  2975   null
+SCOTT  3000   null
+FORD   3000   700
+
+SELECT count(jutalek), count(*), count(fizetes), count(distinct fizetes), sum(fizetes), sum(distinct fizetes)
+FROM dolgozo WHERE dnev like '%O%' AND oazon < 50;
+--------------------------------------------------
+1   3   3   2   8975   5975
+
+-- Nézzük meg, hogyan viselkednek az összesítõ függvények üres halmazra.
+SELECT MIN(fizetes), COUNT(fizetes), COUNT(*) FROM dolgozo WHERE dkod=0;
+---------------------------------------------
+null   0   0
+
+A korábbi táblák:
+-------------------------------------
+NIKOVITS.DOLGOZO       (dkod, dnev, foglalkozas, fonoke, belepes, fizetes, jutalek, oazon)
+NIKOVITS.OSZTALY       (oazon, onev, telephely)
+NIKOVITS.Fiz_kategoria (kategoria, also, felso)
+-------------------------------------
+
+FELADAT: lekérdezések  (Kiterjesztett relációs algebra + SQL, adatfeltöltés --> Relax_4Tabla.txt)
+=======
+
+1.
+Mekkora a maximális fizetés a dolgozók között?
+2.
+Mennyi a dolgozók összfizetése?
+3.
+Mennyi a 20-as osztályon az összfizetes és az átlagfizetés? (Atlag, Össz)
+4.
+Adjuk meg, hogy hány különbözõ foglalkozás fordul elõ a dolgozók között. 
+5.
+Hány olyan dolgozó van, akinek a fizetése > 2000? 
+6.
+Adjuk meg osztályonként az átlagfizetést (oazon, atl_fiz).
+7.
+Adjuk meg osztályonként a telephelyet és az átlagfizetést (oazon, telephely, atl_fiz).
+8.
+Adjuk meg, hogy az egyes osztályokon hány ember dolgozik. (oazon, mennyi)
+9.
+Adjuk meg azokra az osztályokra az átlagfizetést, ahol ez nagyobb mint 2000. (oazon, atlag)
+10.
+Adjuk meg az átlagfizetést azokon az osztályokon, ahol legalább 4-en dolgoznak (oazon, atlag)
+11.
+Adjuk meg az átlagfizetést és telephelyet azokon az osztályokon, ahol legalább 4-en dolgoznak. (oazon, telephely, atlag)
+12.
+Adjuk meg azon osztályok nevét és telephelyét, ahol az átlagfizetés nagyobb mint 2000. (onev, telephely)
+13.
+Adjuk meg azokat a fizetési kategóriákat, amelybe pontosan 3 dolgozó fizetése esik.
+14.
+Adjuk meg azokat a fizetési kategóriákat, amelyekbe esõ dolgozók mindannyian ugyanazon 
+az osztályon dolgoznak. (kategoria)
+15.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek van 1-es fizetési kategóriájú dolgozója. (onev, telephely)
+(Ez a feladat már volt korábban, de segíthet a következõnek a megoldásában.)
+16.
+Adjuk meg azon osztályok nevét és telephelyét, amelyeknek legalább 2 fõ 1-es fizetési 
+kategóriájú dolgozója van.
+
+17. (Feladatgyûjtemény: 2.17 feladat)
+Készítsünk listát a páros és páratlan azonosítójú (dkod) dolgozók számáról. (paritás, szám)
+
+18. (Feladatgyûjtemény: 2.23 feladat)
+Listázzuk ki foglalkozásonként a dolgozók számát, átlagfizetését (kerekítve) numerikusan és grafikusan is.
+200-anként jelenítsünk meg egy '#'-ot. (foglalkozás, szám, átlag, grafika)
+
+

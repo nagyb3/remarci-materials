@@ -1,0 +1,117 @@
+Gyakorlaton megoldandó kötelezõ feladat!!!
+------------------------------------------
+Hozzunk létre mind a két adatbázisban (ullman, aramis) egy GYAK10 nevû 
+három oszlopos táblát, amely azoknak a dolgozóknak a nevét, belépési dátumát, és a belépési dátumuk 
+napjának nevét (pl. hétfõ) tartalmazza, akiknek a fizetése nagyobb az összes dolgozó átlagfizetésénél.
+Tipp: használják az alábbi nap_nev() nevû függvényt.
+Határidõ: a gyakorlat napján 23:59
+
+Az eddig elkészített kötelezõ feladataikat ellenõrizni tudják a következõ
+SQL lekérdezés futtatásával:
+
+SELECT object_name "TABLE", created FROM user_objects 
+WHERE object_type='TABLE' AND object_name LIKE 'GYAK%'
+ORDER BY object_name;
+===========================================================================
+/*  Összetettebb feladat, amely kis gondolkodással egyszerûsíthetõ
+Írjunk meg egy procedúrát, amely a következõk szerint módosítja egyes dolgozók fizetését.
+Vegyük minden osztályon a legrégebben belépett dolgozót, és növeljük meg a fizetését
+annyiszor 100-zal, ahány dolgozó még rajta kívül az osztályon dolgozik.
+(Ha több legrégebben belépett dolgozó is van, akkor mindegyikük fizetését növeljük meg.)
+A módosítások után a program írja ki az új átlagfizetést két tizedesre kerekítve. 
+A procedúra a kiírás után adjon ki egy ROLLBACK utasítást, hogy megmaradjanak az eredeti fizetések,
+így a procedúrát többször is futtatni tudják.
+*/
+CREATE OR REPLACE PROCEDURE fiz_mod IS 
+Tesztelés:
+set serveroutput on
+execute fiz_mod();
+----------------------------------------------------------------
+/* Módosítás kurzorral
+Írjunk meg egy procedúrát, amelyik módosítja a paraméterében megadott osztályon a fizetéseket, és 
+kiírja a dolgozó nevét és új fizetését.  A módosítás mindenki fizetéséhez adjon hozzá n*10 ezret, 
+ahol n a dolgozó nevében levõ magánhangzók száma (A, E, I, O, U).
+A procedúra a kiírás után adjon ki egy ROLLBACK utasítást, hogy megmaradjanak az eredeti fizetések,
+így a procedúrát többször is futtatni tudják.
+*/
+CREATE OR REPLACE PROCEDURE fiz_mod2(p_oazon INTEGER) IS 
+Tesztelés:
+set serveroutput on
+execute fiz_mod2(10);
+----------------------------------------------------------------
+/* Exception
+Írjunk meg egy függvényt, amelyik egy karakteres típusú paraméterben egy dátumot 
+kap a következõ formátumban: 'éééé.hh.nn' vagy 'nn.hh.éééé'. 
+A függvény adja vissza a nap nevét, pl. 'kedd'.
+Ha a megadott karakterlánc nem egy érvényes dátum, akkor adja vissza, hogy 'rossz'.
+*/
+CREATE OR REPLACE FUNCTION nap_nev(p_kar VARCHAR2) RETURN VARCHAR2 IS
+Tesztelés:
+SELECT nap_nev('2017.05.01'), nap_nev('02.05.2017'), nap_nev('2017.13.13') FROM dual;
+----------------------------------------------------------------
+/* Exception, SQLCODE
+Írjunk meg egy procedúrát, amelyik a paraméterében kapott számra külön sorokba kiírja 
+annak reciprokát, négyzetgyökét, és faktoriálisát. Ha bármelyik nem értelmezhetõ vagy
+túlcsordulást okoz, akkor erre a részre írja ki a kapott hibakódot. (SQLCODE).
+*/
+CREATE OR REPLACE PROCEDURE szamok(n number) IS
+Tesztelés:
+set serveroutput on
+execute szamok(0);
+execute szamok(-2);
+execute szamok(40);
+----------------------------------------------------------------
+/*
+Írjunk meg egy függvényt, amelyik visszaadja a paraméterként szereplõ '+'-szal 
+elválasztott számok és kifejezések összegét. Ha valamelyik kifejezés nem szám,
+akkor azt az összeadásnál hagyja figyelmen kívül, vagyis 0-nak tekintse.
+*/
+CREATE OR REPLACE FUNCTION osszeg2(p_char VARCHAR2) RETURN NUMBER IS
+Tesztelés:
+SELECT osszeg2('1+21 + bubu + y1 + 2 + -1 ++') FROM dual;
+----------------------------------------------------------------
+Rekurzív lekérdezésekkel megoldható feladatok
+---------------------------------------------
+
+/* START WITH CONNECT BY 
+Írjunk meg egy procedúrát, amelyik a NIKOVITS.VAGYONOK tábla alapján kiírja azoknak
+a személyeknek a nevét, akikre igaz, hogy van olyan leszármazottjuk, akinek nagyobb
+a vagyona, mint az illetõ vagyona.
+*/
+CREATE OR REPLACE PROCEDURE gazdag_leszarmazott IS
+... 
+set serveroutput on
+execute gazdag_leszarmazott();
+-----------------------------------------------------
+/*
+Írjunk meg egy procedúrát, amelyik a NIKOVITS.VAGYONOK tábla alapján kiírja azoknak
+a személyeknek a nevét, vagyonát, valamint leszármazottainak átlagos vagyonát, akikre igaz, 
+hogy a leszármazottainak átlagos vagyona nagyobb, mint az illetõ vagyona.
+A program tehát soronként 3 adatot ír ki: név, vagyon, leszármazottak átlagos vagyona
+*/
+CREATE OR REPLACE PROCEDURE gazdag_leszarmazottak IS
+...
+set serveroutput on
+execute gazdag_leszarmazottak();
+-----------------------------------------------------
+/*
+Írjunk meg egy procedúrát, amelyik a NIKOVITS.JARATOK tábla alapján kiírja azoknak az irányított
+köröknek a csomópontjait (városait), amelyek a paraméterként megadott várossal kezdõdnek és végzõdnek.
+Tetszõleges elválasztó karakter használható. 
+Példa egy kiírásra: Dallas-Chicago-Denver-Dallas
+*/
+CREATE OR REPLACE PROCEDURE kor_kereso(kezdopont VARCHAR2) IS
+...
+set serveroutput on
+execute kor_kereso('Denver');
+-----------------------------------------------------
+/*
+Írjunk meg egy procedúrát, amelyik a NIKOVITS.VAGYONOK tábla alapján kiírja azoknak a nevét és 
+városát, akiknek legalább 2 olyan felmenõjük van, akiknek ugyanaz a városa, mint az illetõnek.
+*/
+CREATE OR REPLACE PROCEDURE felmeno2 IS
+...
+set serveroutput on
+execute felmeno2();
+-----------------------------------------------------
+

@@ -1,0 +1,45 @@
+Relációs algebra kalkulátor -> RelaX
+--------------------------------------
+https://dbis-uibk.github.io/relax/landing
+ vagy
+https://dbis-uibk.github.io/relax/calc/local/uibk/
+
+Olvassák el a Help-et (jobb fölsõ sarok)
+
+Hogyan hozhatunk létre új relációkat adatokkal feltöltve:
+----------------------------------------------------
+1. Kattintsunk a 'Group Editor' fülre
+2. Másoljuk be a 'Group Editor' ablakba az adatokat. Példaadatokat lásd alább!
+3. Kattintsunk a "preview" gombra, majd a "use Group in editor" gombra.
+4. Most már megadhatjuk és futtathatjuk a lekérdezéseinket relációs algebrában vagy SQL-ben.
+
+Figyelem!!!
+Ez az implementáció csak a halmazokat támogatja, a multihalmazokat (ismétlõdéseket) nem.
+A reláció neve "case sensitive", vagyis úgy kell rá hivatkozni, ahogy létrehoztuk! --> szeret vagy Szeret
+Vannak különbségek az Oracle és a Relax SQL szintaxisa között. 
+
+
+---------------------------------------------------------
+Sample relation Szeret(nev, gyumolcs)
+=========================================================
+group: AB1 Szeret
+description[[ Szeret(nev, gyumolcs) relacio ]]
+
+Szeret = {
+nev:string, gyumolcs:string
+'Malacka',   'alma'
+'Malacka',   'körte'
+'Malacka',   'dinnye'
+'Micimackó', 'alma'
+'Micimackó', 'körte'
+'Kanga',     'alma'
+'Tigris',    'alma'
+'Tigris',    'körte'
+}
+=========================================================
+Példa lekérdezés:
+Milyen gyümölcsöket szeret Micimackó?
+
+pi gyumolcs (sigma nev='Micimackó' (Szeret))
+
+

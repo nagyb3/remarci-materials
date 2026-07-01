@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <title>Index of /Archives/Adatbázisok I/gyak/PLSQL</title>
+ </head>
+ <body>
+<h1>Index of /Archives/Adatbázisok I/gyak/PLSQL</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=A">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top"><img src="/icons/back.gif" alt="[PARENTDIR]"></td><td><a href="/Archives/Adatb%c3%a1zisok%20I/gyak/">Parent Directory</a></td><td>&nbsp;</td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="plsql_programozas_tankonyvtar.pdf">plsql_programozas_tankonyvtar.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">2.6M</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL06_cursor.pdf">PLSQL06_cursor.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">1.1M</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL01_overview.pdf">PLSQL01_overview.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">1.0M</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL04_control_stmt.pdf">PLSQL04_control_stmt.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">950K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL03_SQL_stmt.pdf">PLSQL03_SQL_stmt.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">742K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL08_procedure.pdf">PLSQL08_procedure.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">695K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL05_collection.pdf">PLSQL05_collection.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">694K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL07_exception.pdf">PLSQL07_exception.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">694K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL09_function.pdf">PLSQL09_function.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">690K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="PLSQL02_basics.pdf">PLSQL02_basics.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">677K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/layout.gif" alt="[   ]"></td><td><a href="plsql_overview.pdf">plsql_overview.pdf</a></td><td align="right">2024-09-06 20:44  </td><td align="right">384K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="plsql.doc">plsql.doc</a></td><td align="right">2024-09-06 20:44  </td><td align="right">131K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="PL_SQL%20Quick%20Guide.html">PL_SQL Quick Guide.html</a></td><td align="right">2024-09-06 20:44  </td><td align="right">100K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_00_peldak.txt">pl_00_peldak.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">9.6K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="plsql_konyv_peldak.txt">plsql_konyv_peldak.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">7.8K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_02_kollekcio.txt">pl_02_kollekcio.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">6.7K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_03_kurzor.txt">pl_03_kurzor.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">5.7K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_01_kornyezet.txt">pl_01_kornyezet.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">5.1K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_06_procedura_fv.txt">pl_06_procedura_fv.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">4.6K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_04_kivetel0.txt">pl_04_kivetel0.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">3.9K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_01_adattipusok.txt">pl_01_adattipusok.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">2.5K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_03_bulk_collect.txt">pl_03_bulk_collect.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">2.0K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_05_kivetel2.txt">pl_05_kivetel2.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">1.6K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_02_vezerlo_utasitasok.txt">pl_02_vezerlo_utasitasok.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">1.6K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="pl_04_kivetel1.txt">pl_04_kivetel1.txt</a></td><td align="right">2024-09-06 20:44  </td><td align="right">1.4K</td><td>&nbsp;</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.67 (Debian) Server at remarci.web.elte.hu Port 443</address>
+</body></html>

@@ -1,0 +1,84 @@
+#include <iostream>
+
+using namespace std;
+
+void print_hello(){
+	cout << "Hello sajt!" << endl;
+}
+
+void print_string(string to_print){
+	cout << to_print << endl;
+}
+
+void print_int(int to_print){
+	cout << to_print << endl;
+}
+
+template <typename T>
+void print(T to_print){
+	cout << to_print << endl;
+}
+
+int add(int a, int b){
+	int result = a+b;
+	return result;
+}
+
+void add_one_1(int a){
+	a = a+1;
+}
+
+void add_one_2(int& a){
+	a = a+1;
+}
+
+/*void add_one_3(const int& a){
+	a = a+1;
+}*/
+
+/*void add_one_4(const int a){
+	a = a+1;
+}*/
+
+void print_five_times(const int& a){
+	for (int i = 0; i < 5; ++i){
+		cout << a << " ";
+	}
+	cout << endl;
+}
+
+int main(){
+	print_hello();
+	////////////////////////////////////////////////////////////////////////
+	print_string("sajt");
+	////////////////////////////////////////////////////////////////////////
+	print_int(420);
+	////////////////////////////////////////////////////////////////////////
+	//print_string(2);
+	////////////////////////////////////////////////////////////////////////
+	print("sajt");
+	print(420);
+	////////////////////////////////////////////////////////////////////////
+	cout << add(420,69) << endl;
+	////////////////////////////////////////////////////////////////////////
+	int a = 42;
+	add_one_1(a); //a++ vagy ++a
+	cout << a << endl;
+	////////////////////////////////////////////////////////////////////////
+	int b = 42;
+	add_one_2(b);
+	cout << b << endl;
+	////////////////////////////////////////////////////////////////////////
+	/*int c = 42;
+	add_one_3(c);
+	cout << c << endl;*/
+	////////////////////////////////////////////////////////////////////////
+	/*int d = 42;
+	add_one_4(d);
+	cout << d << endl;*/
+	////////////////////////////////////////////////////////////////////////
+	print_five_times(666);
+	return 0;
+}
+
+

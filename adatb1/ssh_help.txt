@@ -1,0 +1,74 @@
+Tisztelt Hallgatók!
+
+Az alábbiakban megpróbálok további segítséget adni az ssh tunnel használatához.
+A honlapomra két megoldási módszert is feltettem, az egyik az ssh_tunnel.pdf
+állományban, a másik az ssh_SqlDeveloper.pdf állományban van.
+Kérem, hogy elõször az elsõ módszert próbálják ki, mert ott lépésenként
+ellenõrizni tudják, hogy hol lehet a probléma. 
+
+Az elsõ módszer lépései (lásd ssh_tunnel.pdf)
+---------------------------------------------
+
+1.1
+Elõször be kell jelentkezniük a caesar.elte.hu gépre ssh protokoll használatával.
+Ez praktikusan azt jelenti, hogy egy parancssort fognak kapni a caesar.elte.hu gépen.
+A legtöbben a bejelentkezésre a putty programot használják, de ez megtehetõ más
+programok segítségével is, pl. letölthetnek egy "Open ssh" programot, és a parancssorba
+írhatják be azokat a paramétereket, amiket a putty-ban beállítanának.
+Az ssh_tunnel.pdf-ben a parancsoros változat paramétereit is megtalálják.
+Ha nem tudják a caesar azonosítójukat és jelszavukat, akkor ezt orvosolhatják
+a https://ugykezelo.elte.hu/ oldalon, ahová Neptun azonosítóval belépve,
+igényelhetnek új jelszót.
+
+1.2
+Elõfordulhat, hogy még caesar azonosítóval sem tudnak bejelentkezni a caesar gépre.
+Ekkor nézzék meg a https://info.caesar.elte.hu/ oldalon, hogy engedélyezve van-e
+az önök számára az ssh kapcsolat a caesar gépre. Ha nincs, akkor azt egy kattintással
+igényelhetik (lásd szintén az ssh_tunnel.pdf-ben), és automatikusan meg is kapják.
+Ezek után már biztosan be kell tudniuk jelentkezni a caesar.elte.hu gépre.
+Ha mégsem, akkor keressék a caesar üzemeltetõket!
+
+1.3
+Egy további problémaként szokott jelentkezni, hogy a caesar gép túl hamar megszakítja
+a kapcsolatot, ha nem csinálunk semmit a bejelentkezés után kapott parancssorban.
+Erre is javasoltam egy megoldást (lásd keep_alive.sh szintén az ssh_tunnel.pdf állományban).
+
+1.4
+Vigyázat! A caesar gépre úgy kell ssh-val bejelentkezniük, hogy az ssh kapcsolatot
+megkérik (beállítják) a megfelelõ port forwardolására. Ennek beállítása szintén
+megtalálható az ssh_tunnel.pdf állományban. Ha a putty programban elvégezték a megfelelõ
+beállítást, a beállításokat mentsék is el a 'Session' menüpontban.
+
+1.5
+Ha a fentiek sikeresek voltak, akkor már csak arra kell vigyázniuk, hogy az SqlDeveloper
+mezõit megfelelõen töltsék ki. Ez is megtalálható az ssh_tunnel.pdf állományban.
+
+1.6
+Lehetséges hibaüzenetek az SqlDevelopertõl:
+"The Network adapter could not establish the connection"
+  Ez a hiba azt jelenti, hogy el sem jutott a kapcsolódás az adatbázis szerver 
+  megfelelõ portjához. Vagy nincs caesar-os kapcsolat, ami forwardolja a forgalmat,
+  vagy az SqlDeveloperben nem a localhost megfelelõ portját írtuk be a mezõbe.
+"TNS: listener does not currently know of service requested"
+  Ez a hiba azt jelenti, hogy eljutottunk az adatbáziskezelõ 1521-es portjáig,
+  de rossz service_name-et adtunk meg.
+"Invalid username/password ..."
+  Ez a hiba magáért beszél.
+
+A második módszer (lásd sshSqlDeveloper.pdf)
+--------------------------------------------
+Ez a módszer ugyanazon az útvonalon, a caesar-on keresztül juttatja el 
+a forgalmat az adatbázis szerverhez, de az ssh kapcsolatot és a port 
+forwardot is az SqlDeveloper program fogja implicit módon kezelni.
+Ennek elõnye, hogy csak egy programot kell használniuk, hátránya
+azonban, hogy ha ha valamikor, akár SQL lekérdezések futtatása közben
+egyszer csak hibaüzenetet kapnak, vagy semmiféle választ nem kapnak,
+akkor nem fogják látni, hogy hol, melyik ponton szakadt meg a kapcsolat.
+Gyakori probléma, hogy a caesar gép szakítja meg az ssh kapcsolatot a tétlenség
+miatt, de azt ilyenkor nem látják. Erre is van megoldás, az SqlDeveloperhez
+telepíteni lehet egy kiegészítõt, ami "életben tartja" az ssh kapcsolatot.
+Ennek módját már nem írtam le, aki feltétlenül így szeretne kapcsolódni,
+kressen rá a google-ban.
+
+
+

@@ -1,0 +1,274 @@
+/* IF, CASE, LOOP, FOR, EXIT */
+/* CASE - van szelektor_kifejezés, nincs egyezõ ág, nincs ELSE */
+BEGIN
+  CASE 2
+  WHEN 1 THEN
+    DBMS_OUTPUT.PUT_LINE('2 = 1');
+  WHEN 1+2 THEN
+    DBMS_OUTPUT.PUT_LINE('2 = 1 + 2 = ' || (1+2));
+  END CASE;
+-- kivétel: ORA-06592 , azaz CASE_NOT_FOUND
+END;
+/
+
+/* CASE - Nincs szelektor_kifejezés, az ágakban feltétel szerepel.*/
+DECLARE
+  v_Szam NUMBER;
+BEGIN
+  v_Szam := 10; -- 10, 3, 7, 5
+  CASE
+  WHEN v_Szam MOD 2 = 0 THEN
+    DBMS_OUTPUT.PUT_LINE('Páros.');
+  WHEN v_Szam < 5 THEN
+    DBMS_OUTPUT.PUT_LINE('Kisebb 5-nél.');
+  WHEN v_Szam > 5 THEN
+    DBMS_OUTPUT.PUT_LINE('Nagyobb 5-nél.');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Ez csak az 5 lehet.');
+  END CASE;
+END;
+/
+
+/* LOOP - egy látszólag végtelen ciklus */
+DECLARE
+  v_Faktorialis NUMBER(5);
+  i PLS_INTEGER;
+BEGIN
+  i := 1;
+  v_Faktorialis := 1;
+LOOP
+-- Elõbb-utóbb nem fér el a szorzat 5 számjegyen.
+  v_Faktorialis := v_Faktorialis * i;
+  i := i + 1;
+END LOOP;
+EXCEPTION
+  WHEN VALUE_ERROR THEN
+    DBMS_OUTPUT.PUT_LINE(v_Faktorialis||' a legnagyobb legfeljebb 5-jegyû faktoriális.');
+END;
+/
+
+/* FOR - REVERSE használata */
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Gauss így adta össze a számokat (most csak 1-10):');
+  FOR i IN 1..10 LOOP
+    DBMS_OUTPUT.PUT(RPAD(i, 4));
+  END LOOP;
+  DBMS_OUTPUT.NEW_LINE;
+  FOR i IN REVERSE 1..10 LOOP
+    DBMS_OUTPUT.PUT(RPAD(i, 4));
+  END LOOP;
+  DBMS_OUTPUT.NEW_LINE;
+  FOR i IN REVERSE 1..10 LOOP
+    DBMS_OUTPUT.PUT(RPAD('--', 4));
+  END LOOP;
+  DBMS_OUTPUT.NEW_LINE;
+  FOR i IN REVERSE 1..10 LOOP
+    DBMS_OUTPUT.PUT(RPAD(11, 4));
+  END LOOP;
+  DBMS_OUTPUT.NEW_LINE;
+END;
+/
+Gauss így adta össze a számokat (most csak 1-10):
+1   2   3   4   5   6   7   8   9   10  
+10  9   8   7   6   5   4   3   2   1   
+--  --  --  --  --  --  --  --  --  --  
+11  11  11  11  11  11  11  11  11  11  
+
+/* EXIT - A címke segítségével nem csak a belsõ ciklus fejezhetõ be */
+DECLARE
+  v_Osszeg PLS_INTEGER := 0;
+BEGIN
+  <<kulso>>
+  FOR i IN 1..100 LOOP
+    FOR j IN 1..i LOOP
+      v_Osszeg := v_Osszeg + i;
+-- Ha elértük a keresett összeget, mindkét ciklusból kilépünk.
+      EXIT kulso WHEN v_Osszeg > 100;
+    END LOOP;
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE(v_Osszeg);
+END;
+/
+
+
+/* SQL utasítások plsql programban: INSERT, DELETE, UPDATE, SELECT */
+/* RETURNING - segítségével a törölt sorok alapján számított értékek kaphatók vissza.*/
+DECLARE
+  v_belepes dolgozo.belepes%TYPE;
+  v_fizetes dolgozo.fizetes%TYPE;
+BEGIN
+  DELETE FROM dolgozo WHERE dnev LIKE 'KING%' RETURNING belepes, fizetes
+  INTO v_belepes, v_fizetes;
+  dbms_output.put_line(to_char(v_belepes,'yyyy.mm.dd:hh24:mi')||' - '||v_fizetes);
+  ROLLBACK;
+END;
+/
+1981.11.17:12:00 - 5000
+
+/* RETURNING - a módosított, új értéket adja vissza.*/
+DECLARE
+  TYPE rektip IS RECORD(dn dolgozo.dnev%type, fiz dolgozo.fizetes%type);
+  TYPE t_tab IS TABLE OF rektip INDEX BY PLS_INTEGER;
+  v_tab t_tab;
+BEGIN
+  UPDATE dolgozo SET fizetes = fizetes + 1 WHERE dnev LIKE '%L%' 
+  RETURNING dnev, fizetes BULK COLLECT INTO v_tab;
+  FOR i IN v_tab.FIRST .. v_tab.LAST LOOP
+    dbms_output.put_line(v_tab(i).dn||' - '||v_tab(i).fiz);
+  END LOOP;
+  ROLLBACK;
+END;
+/
+ALLEN - 1601
+BLAKE - 4251
+CLARK - 2451
+MILLER - 1301
+
+
+/* Hatáskör és élettartam */
+/* 
+A PL/SQL a statikus hatáskörkezelést alkalmazza, de egy lokális név csak a deklarációjától 
+kezdve látszik. Egy adott programegységben deklarált név a tartalmazott programegységekben 
+globális névként jelenik meg és újradeklarálás esetén minõsítéssel hivatkozható. 
+A minõsítõ az alprogram vagy csomag neve, illetve a blokk címkéje lehet. Ha tartalmazott 
+programegységben nem deklarálunk újra egy globális nevet, akkor az minõsítés nélkül hivatkozható.
+*/
+
+/* Példa az azonosítók hatáskörének és láthatóságának bemutatására */
+<<blokk>>
+DECLARE
+  i NUMBER := 1;
+  p VARCHAR2(10) := 'Hello';
+  /* Az alprogramban deklarált i elfedi a globális változót, p paraméter is elfedi a külsõ p változót. */
+  PROCEDURE alprg1(p NUMBER DEFAULT 22) IS
+    i NUMBER := 2;
+  /* A lokális alprogram további névütközéseket tartalmaz. */
+    PROCEDURE alprg2(p NUMBER DEFAULT 555) IS
+      i NUMBER := 3;
+    BEGIN
+      FOR i IN 4..4 LOOP
+        DBMS_OUTPUT.PUT_LINE(blokk.i || ', ' || blokk.p);
+        DBMS_OUTPUT.PUT_LINE(alprg1.i || ', ' || alprg1.p);
+        DBMS_OUTPUT.PUT_LINE(alprg2.i || ', ' || alprg2.p);
+        DBMS_OUTPUT.PUT_LINE(i || ', ' || p);
+      END LOOP;
+    END alprg2;
+  BEGIN
+    alprg2;
+  END alprg1;
+BEGIN
+  alprg1;
+END blokk;
+/
+1, Hello
+2, 22
+3, 555
+4, 555
+
+
+/* Példa arra, amikor két procedúra kölcsönösen hívja egymást. Lásd az elõre deklarációt. */
+DECLARE
+  PROCEDURE elj1(p NUMBER);   -- elõre deklaráció
+  PROCEDURE elj2(p NUMBER) IS
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE('elj2: ' || p);
+    elj1(p+1);
+  END elj2;
+  PROCEDURE elj1(p NUMBER) IS
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE('elj1: ' || p);
+    IF p = 0 THEN elj2(p+1); END IF;
+  END elj1;
+BEGIN
+  elj1(0);
+END;
+/
+elj1: 0
+elj2: 1
+elj1: 2
+
+
+/* A PL/SQL a dinamikus élettartam-kezelést alkalmazza blokkokra és alprogramokra.
+   Egy változó akkor kap címkomponenst, ha aktivizálódik az a programegység, amelynek õ lokális változója. 
+   Ekkor történik meg az automatikus vagy explicit kezdõértékadás. A címkomponens megszûnik, ha a 
+   programegység befejezi a mûködését.
+*/
+DECLARE
+  i NUMBER;
+/* p és j inicializálása minden híváskor megtörténik. */
+  PROCEDURE alprg(p NUMBER DEFAULT 2*(-i)) IS
+    j NUMBER := i*3;
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE(' '|| i || ' ' || p || ' ' || j);
+  END alprg;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE(' i  p  j');
+  DBMS_OUTPUT.PUT_LINE('-- -- --');
+  i := 1;
+  alprg;
+  i := 2;
+  alprg;
+END;
+/
+i  p  j
+-- -- --
+ 1 -2 3
+ 2 -4 6
+
+
+/* Kivételkezelés */
+/* A kivételek lehetnek beépített kivételek (amelyeket általában a futtató rendszer vált ki), 
+vagy felhasználói kivételek, amelyeket valamelyik programegység deklarációs részében határoztunk meg. 
+A beépített kivételeknek lehet nevük (például ZERO_DIVIDE), a felhasználói kivételeknek mindig van 
+nevük. A felhasználói kivételeket mindig explicit módon, külön utasítással kell kiváltani. 
+Ezzel az utasítással beépített kivétel is kiváltható.
+A kivételkezelõ olyan WHEN ágakból áll, amelyek név szerint kezelik a kivételeket és legutolsó ágként 
+szerepelhet egy OTHERS ág, amely minden kivételt kezel.
+Ha nincs OTHERS ág vagy nincs is kivételkezelõ, akkor a kivétel továbbadódik. A kivétel továbbadása 
+azt jelenti, hogy a programegység befejezõdik, és a futtató rendszer blokk esetén a tartalmazó blokkban, 
+alprogram esetén a hívó programegységben keres megfelelõ kivételkezelõt.
+Ha nincs több tartalmazó vagy hívó programegység, akkor a hívási környezetben egy UNHANDLED EXCEPTION 
+kivétel váltódik ki.
+Ha deklarációs részben vagy kivételkezelõben következik be egy kivétel, az azonnal továbbadódik.
+*/
+
+DECLARE
+  i PLS_INTEGER;
+  j NUMBER NOT NULL := 1;
+  numeric_overflow EXCEPTION;   -- Egy névtelen hiba nevesítése. 
+  PRAGMA EXCEPTION_INIT(numeric_overflow, -1426);   -- numeric overflow
+  VE_szinonima EXCEPTION;       -- Egy már amúgy is nevesített kivételhez még egy név rendelése.
+  PRAGMA EXCEPTION_INIT(VE_szinonima, -6502);       -- VALUE_ERROR
+BEGIN
+  <<blokk1>>
+  BEGIN
+    i := 2**32;
+  EXCEPTION
+    WHEN numeric_overflow THEN     -- Kezeljük a numeric overflow hibát
+    DBMS_OUTPUT.PUT_LINE('Blokk1 - numeric_overflow!' || SQLERRM);
+  END blokk1;
+
+  <<blokk2>>
+  BEGIN
+    i := NULL;
+    j := i;   -- VALUE_ERROR-t vált ki, mert i NULL.
+    DBMS_OUTPUT.PUT_LINE(j);
+  EXCEPTION
+    WHEN VE_szinonima THEN    -- A VE_szinonima használható VALUE_ERROR helyett.
+    DBMS_OUTPUT.PUT_LINE('Blokk2 - VALUE_ERROR: ' || SQLERRM);
+  END blokk2;
+
+  <<blokk3>>
+  BEGIN
+    RAISE VE_szinonima;
+  EXCEPTION
+    WHEN VALUE_ERROR THEN   -- A saját kivételünk szinonima a VALUE_ERROR-ra
+    DBMS_OUTPUT.PUT_LINE('Blokk3 - VALUE_ERROR: ' || SQLERRM);
+  END blokk3;
+END;
+/
+Blokk1 - numeric_overflow!ORA-01426: numerikus túlcsordulás
+Blokk2 - VALUE_ERROR: ORA-06502: PL/SQL: numerikus- vagy értékhiba ()
+Blokk3 - VALUE_ERROR: ORA-06502: PL/SQL: numerikus- vagy értékhiba ()
+
+
