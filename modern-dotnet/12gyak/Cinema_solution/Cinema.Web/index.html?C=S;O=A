@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <title>Index of /Archives/Modern webalkalmazások fejlesztése .NET környezetben/gyak/12gyak/Cinema_solution/Cinema.Web</title>
+ </head>
+ <body>
+<h1>Index of /Archives/Modern webalkalmazások fejlesztése .NET környezetben/gyak/12gyak/Cinema_solution/Cinema.Web</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=A">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=D">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top"><img src="/icons/back.gif" alt="[PARENTDIR]"></td><td><a href="/Archives/Modern%20webalkalmaz%c3%a1sok%20fejleszt%c3%a9se%20.NET%20k%c3%b6rnyezetben/gyak/12gyak/Cinema_solution/">Parent Directory</a></td><td>&nbsp;</td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="App_Data/">App_Data/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Controllers/">Controllers/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Infrastructure/">Infrastructure/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Models/">Models/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Properties/">Properties/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Utility/">Utility/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Views/">Views/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="wwwroot/">wwwroot/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="appsettings.Development.json">appsettings.Development.json</a></td><td align="right">2025-05-13 23:47  </td><td align="right">119 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="Cinema.Web.csproj.user">Cinema.Web.csproj.user</a></td><td align="right">2025-05-14 09:13  </td><td align="right">238 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="appsettings.json">appsettings.json</a></td><td align="right">2025-05-13 23:47  </td><td align="right">492 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="Cinema.Web.csproj">Cinema.Web.csproj</a></td><td align="right">2025-05-13 23:47  </td><td align="right">1.3K</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="Program.cs">Program.cs</a></td><td align="right">2025-05-13 23:47  </td><td align="right">1.7K</td><td>&nbsp;</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.67 (Debian) Server at remarci.web.elte.hu Port 443</address>
+</body></html>

@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <title>Index of /Archives/Modern webalkalmazások fejlesztése .NET környezetben/gyak/12gyak/Cinema_solution</title>
+ </head>
+ <body>
+<h1>Index of /Archives/Modern webalkalmazások fejlesztése .NET környezetben/gyak/12gyak/Cinema_solution</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=A">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=D">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top"><img src="/icons/back.gif" alt="[PARENTDIR]"></td><td><a href="/Archives/Modern%20webalkalmaz%c3%a1sok%20fejleszt%c3%a9se%20.NET%20k%c3%b6rnyezetben/gyak/12gyak/">Parent Directory</a></td><td>&nbsp;</td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Blazor.ComponentTests/">Cinema.Blazor.ComponentTests/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Blazor.E2E/">Cinema.Blazor.E2E/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Blazor.WebAssembly/">Cinema.Blazor.WebAssembly/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Cache/">Cinema.Cache/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.DataAccess/">Cinema.DataAccess/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.React/">Cinema.React/</a></td><td align="right">2025-05-13 23:47  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Shared/">Cinema.Shared/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.SignalR/">Cinema.SignalR/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Tests/">Cinema.Tests/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.Web/">Cinema.Web/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Cinema.WebAPI/">Cinema.WebAPI/</a></td><td align="right">2026-02-25 16:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/unknown.gif" alt="[   ]"></td><td><a href="Cinema.sln">Cinema.sln</a></td><td align="right">2025-05-13 23:47  </td><td align="right">8.0K</td><td>&nbsp;</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.67 (Debian) Server at remarci.web.elte.hu Port 443</address>
+</body></html>
