@@ -1,0 +1,87 @@
+﻿Naplózás összefoglaló
+
+UNDO
+--------------------------------------------------------------------------------------------------------
+
+UNDO naplózás szabályai és lemezre írások sorrendje:
+1. <T,X,régi_érték> naplóbejegyzések kiírása lemezre
+2. Output(X) módosított adatelemek kiírása lemezre       (-> a gond, hogy túl sokszor kell lemezre írni)
+3. <T,COMMIT> naplóbejegyzés kiírása lemezre
+
+Adjuk meg egy UNDO napló alapján a helyreállításhoz szükséges mûveleteket a megfelelõ sorrendben.
+A mûveletek, amiket megfelelõ sorrendben el kell végezni: 
+WRITE(), OUTPUT(), <T,...> (naplóbejegyzés írása memóriába), FLUSH LOG (napló lemezre írása)
+
+Helyreállítás:
+A COMMIT-tal nem rendelkezõ (és ABORT-tal nem rendelkezõ) tranzakciók mûveleteit fordított 
+sorrendben (hátulról elõre) megsemmisítjük, vagyis vissza írjuk a régi értéket az elembe (WRITE) 
+majd a lemezre (OUTPUT). 
+A végén <ABORT, T>-t írunk a naplóba és kiírjuk lemezre a naplót (FLUSH LOG).
+
+Ellenõrzõpont képzés
+Egyszerû: 
+  megvárni az aktív tranzakciók befejezõdését, addig újat nem engedni, 
+  majd <CKPT> írása a naplóba + FLUSH LOG
+
+Mûködés közbeni:
+  <START CKPT(T1, T2 ... Tk)> a naplóba majd FLUSH LOG
+  megvárni az aktív tranzakciók befejezõdését, közben indulhatnak újak
+  majd <END CKPT> a naplóba + FLUSH LOG
+
+A helyreállításhoz elég visszafelé a legutóbbi <END CKPT> elõtti <START CKPT>-ig visszamenni. 
+Ha visszafelé haladva <START CKPT(Ti)> -vel találkozunk elõbb, akkor elég a legkorábbi <Start Ti>-ig 
+visszamenni. (Vagy egy olyan <START CKPT>-ig, amelyhez tartozó <END CKPT> is a naplóban van,
+mivel ez biztosan megelõzi a legkorábbi <Start Ti>-t.)
+
+
+REDO
+--------------------------------------------------------------------------------------------------------
+
+REDO naplózás szabályai és a lemezre írások sorrendje:
+1. <T,X,új_érték> naplóbejegyzések kiírása lemezre
+2. <T,COMMIT> naplóbejegyzés kiírása lemezre  
+3. Output(X) módosított elemek kiírása lemezre      (-> a gond, hogy túl sokáig nem szabad lemezre írni) 
+4. <T, END>  naplóbejegyzés kiírása a lemezre
+
+Adjuk meg egy REDO napló alapján a helyreállításhoz szükséges mûveleteket a megfelelõ sorrendben.
+
+
+Helyreállítás:
+A COMMIT-tal rendelkezõ (de END-del nem rendelkezõ) tranzakciók mûveleteit újból végrehajtani 
+majd <END, T>-t írni a naplóba.
+A be nem fejezett tranzakciókra <ABORT, T>-t írni a naplóba + FLUSH LOG
+
+
+Ellenõrzõpont képzés (mûködés közbeni)
+  <START CKPT(T1, T2, ... Tk)> + FLUSH LOG
+  A START CKPT elõtt befejezõdött tranzakciók még lemezre nem írt módosításainak kiírása
+  <END CKPT> + FLUSH LOG
+
+A helyreállításhoz elég a legutóbbi <END CKPT> elõtti <START CKPT(Ti)> tranzakciói közül
+a legkorábbinak a kezdetéig -> <START Ti>-ig visszamenni
+
+
+UNDO/REDO
+---------------------------------------------------------------------------------------------------
+
+UNDO/REDO naplózás szabályai és a lemezre írások sorrendje:
+1. elõször a naplózást írjuk ki (<T,X,régi,új>), csak utána magát a módosítást (Output(X))
+   (a COMMIT-ot naplózhatjuk a módosítások kiírása elõtt is vagy utána is) 
+
+Helyreállítás:
+A COMMIT-tal nem rendelkezõ tranzakciókat UNDO-zzuk, majd a naplóba <ABORT, T>-t írunk + FLUSH LOG.
+A COMMIT-tal rendelkezõ tranzakciókat REDO-zzuk, majd a naplóba <END, T>-t írunk + FLUSH LOG.
+
+
+Ellenõrzõpont képzés
+  <START CKPT(T1, T2, ... Tk)> + FLUSH LOG
+  Az összes piszkos puffer lemezre írása
+  <END CKPT> + FLUSH LOG
+
+A helyreállításhoz elég a legutóbbi <END CKPT> elõtti <START CKPT(Ti)> tranzakciói közül
+a legkorábbinak a kezdetéig -> <START Ti>-ig visszamenni. Az UNDO mûveleteket az iménti
+bejegyzésig visszamenve kell végrehajtani, a REDO mûveleteket azonban elég a 
+<START CKPT(Ti)>-tõl elõrefelé haladva (lásd naplo.ppt 104-106 old.)
+
+Ha visszafelé haladva <START CKPT(Ti)> -vel találkozunk elõbb azt figyelmen kívül hagyjuk,
+és keressük visszafelé a legutóbbi <END CKPT>-t.

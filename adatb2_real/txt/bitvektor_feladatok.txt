@@ -1,0 +1,120 @@
+﻿Példa bitevektorra
+
+Legyen egy HALLGATOK nevű táblánk, amelynek három oszlopa (neptun, kar, felvétel éve) és 4 sora van:
+
+Neptun 	Kar 	Felvétel éve
+ABC123 	IK 		2018
+XYZ789 	TTK 	2019
+ASD135 	IK 		2020
+GOT999 	IK 		2019
+
+Készítsük el a bitvektorokat a "Kar" és "Felvétel éve" oszlopokra.
+Minden oszlopnak annyi bitvektora lesz, ahány különböző érték előfordul benne.
+Minden értéknek egy saját bitvektora lesz, amely nanyi elemből áll ahány sora vna a táblának.
+Egy bitvektor egy elemének 1-es, ha az elemnek megfelelő sorban az érték azonos a bitvektorhoz tartozó értékkel.
+Nézzük az így elkészített bitvektorokat:
+
+Kar = "IK" bitvektora: 1011
+Oszlopos formában:
+1
+0
+1
+1
+
+Kar = "TTK" bitvektora: 0100
+Oszlopos formában:
+0
+1
+0
+0
+
+Felvétel = 2018 bitvektora: 1000
+Oszlopos formában:
+1
+0
+0
+0
+
+Felvétel = 2019 bitvektora: 0101
+Oszlopos formában:
+0
+1
+0
+1
+
+Felvétel = 2020 bitvektora: 0010
+Oszlopos formában:
+0
+0
+1
+0
+
+
+Bitvektorok használata
+
+Tekintsük a következő lekérdezést és oldjuk meg bitvektorok használatával:
+
+SELECT * FROM HALLGATOK
+WHERE KAR="IK" AND FELVÉTEL_ÉVE IN (2018, 2019);
+
+Ehhez szükségünk van a "Felvétel éve" oszlop két bitvektorára (a 2018 és 2019-hez létrheozotthoz)
+és a "Kar" oszlop "IK" értékéhez létrehozott bitvektorára.
+Első lépésben a logikai OR műveletet alkalmazzuk a "Felvétel éve" két bitvektorára.
+Eztán az így kapott vektorra és a "Kar" oszlop "IK" bitvektorára alkalmazzuk a logikai AND műveletet.
+Az eredményül kapott bitvektor megadja, hogy az eredeti tábla melyik sorai felelnek meg a feltételeknek.
+
+Nézzük meg a megoldást a bitvektort sorosan ábrázolva:
+
+1011 AND (1000 OR 0101) = 1001
+
+Az eredmény oszlopos formában:
+1
+0
+0
+1
+
+Azaz, az eredeti tábla első és negyedik sora felel meg a lekérdezés WHERE feltételének.
+
+
+Gyakorló feladatok
+
+Teküntsük az alábbi táblát, amely a jól ismert DOLGOZO tábla egyszerűsített változata.
+Ezt a táblát az ARAMIS adatbázisban VDANI.DOLGOZO_BITMAP néven lehet megtalálni.
+
+DNEV    FIZETES FOGLALKOZAS BELEPES OAZON
+KING    5000    PRESIDENT   1981    10
+BLAKE   2850    MANAGER     1981    30
+CLARK   2450    MANAGER     1981    10
+JONES   2975    MANAGER     1981    20
+MARTIN  1250    SALESMAN    1981    30
+ALLEN   1600    SALESMAN    1981    30
+TURNER  1500    SALESMAN    1981    30
+JAMES   950     CLERK       1981    30
+WARD    1250    SALESMAN    1981    30
+FORD    3000    ANALYST     1981    20
+SMITH   800     CLERK       1980    20
+SCOTT   3000    ANALYST     1982    20
+ADAMS   1100    CLERK       1983    20
+MILLER  1300    CLERK       1982    10
+
+Feladat:
+Tegyük fel, hogy a FOGLALKOZAS, a BELEPES és az OAZON oszlopokra létezik bitmap index (3 index).
+Készítsük el az alábbi lekérdezésekhez szükséges bitvektorokat, majd végezzük el rajtuk a szükséges 
+mûveleteket, és adjuk meg azt az elállt bitvektort, ami alapján a végeredmény sorok megkaphatók.
+Ellenõrzésképpen adjuk meg a lekérdezést SQL-ben is.
+ 
+- Adjuk meg azoknak a dolgozóknak a nevét, akik 1981-ben léptek be és a foglalkozásuk hivatalnok (CLERK),
+  vagy a 20-as osztályon dolgoznak és a foglalkozásuk MANAGER.
+
+- Adjuk meg azoknak a dolgozóknak a nevét, akik nem 1981-ben léptek be és a 10-es vagy a 30-as 
+  osztályon dolgoznak.
+
+
+
+Szakaszhossz kódolás feladatok
+
+Tömörítse a következõ bitvektort a szakaszhossz kódolással. (lásd UW_szakaszhossz_kodolas.doc)
+0000000000000000000000010000000101
+
+Fejtsük vissza a következõ, szakaszhossz kódolással tömörített bitvektort:
+1111010101001011

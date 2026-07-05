@@ -1,0 +1,157 @@
+﻿1. Adjuk meg azon szállítások összmennyiségét, ahol ckod=2 és szkod=2.
+
+a) Adjuk meg úgy a lekérdezést, hogy ne használjon indexet.
+
+select /*+ no_index(c) */ 
+sum(mennyiseg) from nikovits.szallit c where ckod = 2 and szkod = 2;
+
+-----------------------------------------------
+| Id  | Operation          | Name    | E-Rows |
+-----------------------------------------------
+|   0 | SELECT STATEMENT   |         |        |
+|   1 |  SORT AGGREGATE    |         |      1 |
+|*  2 |   TABLE ACCESS FULL| SZALLIT |      1 |
+-----------------------------------------------
+
+b) A végrehajtási tervben két indexet használjon, és képezze a sorazonosítók metszetét (AND-EQUAL).
+
+select /*+ and_equal(s SZT_SZKOD SZT_CKOD) */ 
+sum(mennyiseg) from nikovits.szallit s where ckod = 2 and szkod = 2;
+
+-----------------------------------------------------------
+| Id  | Operation                    | Name      | E-Rows |
+-----------------------------------------------------------
+|   0 | SELECT STATEMENT             |           |        |
+|   1 |  SORT AGGREGATE              |           |      1 |
+|*  2 |   TABLE ACCESS BY INDEX ROWID| SZALLIT   |      1 |
+|   3 |    AND-EQUAL                 |           |        |
+|*  4 |     INDEX RANGE SCAN         | SZT_CKOD  |     10 |
+|*  5 |     INDEX RANGE SCAN         | SZT_SZKOD |    598 |
+-----------------------------------------------------------
+
+2. Adjuk meg a Pecs-i telephelyű szállítók által szállított piros cikkek összmennyiségét. 
+
+a) Adjuk meg úgy a lekérdezést, hogy a szallit táblát először a cikk táblával join-olja az oracle.
+
+select /*+ ordered */ sum(mennyiseg) 
+from nikovits.szallit sz, nikovits.cikk c, nikovits.szallito szto
+where sz.szkod=szto.szkod and c.ckod=sz.ckod
+and c.szin='piros' and szto.telephely='Pecs';
+
+-----------------------------------------------------------------------------
+| Id  | Operation            | Name     | E-Rows |  OMem |  1Mem | Used-Mem |
+-----------------------------------------------------------------------------
+|   0 | SELECT STATEMENT     |          |        |       |       |          |
+|   1 |  SORT AGGREGATE      |          |      1 |       |       |          |
+|*  2 |   HASH JOIN          |          |    243 |  2545K|  2545K| 1176K (0)|
+|*  3 |    TABLE ACCESS FULL | SZALLITO |      4 |       |       |          |
+|*  4 |    HASH JOIN         |          |    911 |  1946K|  1946K| 2352K (0)|
+|   5 |     TABLE ACCESS FULL| SZALLIT  |  10000 |       |       |          |
+|*  6 |     TABLE ACCESS FULL| CIKK     |     91 |       |       |          |
+-----------------------------------------------------------------------------
+
+b) Adjuk meg úgy a lekérdezést, hogy a szallit táblát először a szallito táblával join-olja az oracle.
+
+select /*+ ordered */ sum(mennyiseg) 
+from nikovits.szallit sz, nikovits.szallito szto, nikovits.cikk c
+where sz.szkod=szto.szkod and c.ckod=sz.ckod
+and c.szin='piros' and szto.telephely='Pecs';
+
+-----------------------------------------------------------------------------
+| Id  | Operation            | Name     | E-Rows |  OMem |  1Mem | Used-Mem |
+-----------------------------------------------------------------------------
+|   0 | SELECT STATEMENT     |          |        |       |       |          |
+|   1 |  SORT AGGREGATE      |          |      1 |       |       |          |
+|*  2 |   HASH JOIN          |          |    243 |  2545K|  2545K| 1642K (0)|
+|*  3 |    TABLE ACCESS FULL | CIKK     |     91 |       |       |          |
+|*  4 |    HASH JOIN         |          |   2667 |  1946K|  1946K| 2125K (0)|
+|   5 |     TABLE ACCESS FULL| SZALLIT  |  10000 |       |       |          |
+|*  6 |     TABLE ACCESS FULL| SZALLITO |      4 |       |       |          |
+-----------------------------------------------------------------------------
+
+4. Adjunk meg egy olyan lekérdezést a fenti táblákra (hintekkel együtt ha szükséges), aminek az alábbi
+   lesz a végrehajtási terve:
+
+TERV (OPERATION + OPTIONS + OBJECT_NAME)
+----------------------------------------
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    TABLE ACCESS + FULL + NIKOVITS.CIKK
+
+select /*+ full(c) */ sum(suly)
+from nikovits.cikk c where szin='piros';
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    TABLE ACCESS + BY INDEX ROWID + NIKOVITS.CIKK
+      INDEX + UNIQUE SCAN + NIKOVITS.C_CKOD
+
+select /*+ index(c) */ sum(suly)
+from nikovits.cikk c where ckod=1;
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN +  + 
+      TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+select /*+ full(p) */ sum(mennyiseg)
+from nikovits.szallit sz natural join nikovits.projekt p 
+where helyszin='Szeged';
+
+
+SELECT STATEMENT +  + 
+  HASH + GROUP BY + 
+    HASH JOIN +  + 
+      TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+select /*+ full(p) */ sum(mennyiseg)
+from nikovits.szallit sz natural join nikovits.projekt p 
+where helyszin='Szeged' group by ckod;
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    MERGE JOIN +  + 
+      SORT + JOIN + 
+        TABLE ACCESS + BY INDEX ROWID BATCHED + NIKOVITS.CIKK
+          INDEX + RANGE SCAN + NIKOVITS.C_SZIN
+      SORT + JOIN + 
+        TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+select /*+ use_merge(sz c) index(c) */ sum(mennyiseg)
+from nikovits.szallit sz natural join nikovits.cikk c 
+where szin='piros';
+
+
+SELECT STATEMENT +  + 
+  FILTER +  + 
+    HASH + GROUP BY + 
+      HASH JOIN +  + 
+        NESTED LOOPS +  + 
+          TABLE ACCESS + BY INDEX ROWID + NIKOVITS.SZALLITO
+            INDEX + UNIQUE SCAN + NIKOVITS.SZO_SZKOD
+          TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+        TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+select /*+ full(sz) */ sum(mennyiseg), ckod
+from nikovits.szallit sz, nikovits.szallito szto, nikovits.projekt p
+where sz.pkod=p.pkod and sz.szkod=szto.szkod and szto.szkod=15
+and helyszin='Szeged' and telephely='Pecs'
+group by ckod having ckod>100;
+
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN + SEMI + 
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+      TABLE ACCESS + FULL + NIKOVITS.CIKK
+
+select /*+ leading(sz) */ sum(mennyiseg)
+from nikovits.szallit sz
+where exists
+  (select /*+ hash_sj */ ckod from nikovits.cikk c where c.ckod=sz.ckod and szin='piros');

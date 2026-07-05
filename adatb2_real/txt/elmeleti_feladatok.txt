@@ -1,0 +1,36 @@
+﻿Jelölések
+
+T(R) – az R reláció sorainak a száma.
+bf(R) – blokkolási faktor, azaz R reláció hány sora fér el egy blokkban. 
+Blokkolási faktorról indexek esetében is beszélhetünk. Ez esetben azt mutatja, 
+hogy hány kulcs-mutató pár fér el egy blokkban.
+B(R) – az R reláció sorainak tárolásához szükséges blokkok száma.
+Indexek esetében B(I) az I index kulcs-mutató párjai tárolásához szükséges blokkok száma.
+
+
+1. feladat
+
+Van egy R táblánk, egy I1 sűrű és egy I2 ritka indexünk az alábbi
+paraméterekkel: T(R) = 10 000, bf(R) = 20, bf(I1) = 100, bf(I2) = 100
+Számoljuk ki, hogy hány blokkban fér el a tábla, a sűrű és a ritka index, 
+azaz következőket: B(R), B(I1), B(I2)
+
+
+2. feladat
+
+Végezzük el az előző feladatot úgy, hogy a blokkok csak 80%-ban lehetnek tele.
+
+
+3. feladat
+
+Legyen:
+T(R) = 1000000 (egy millió)
+bf(R) = 20
+Egy tetszőleges oszlopra készítünk B+ fa indexet, amelyre bf(I) = 50
+
+Kérdések:
+
+Hány blokkot kell beolvasnunk egy konkrét sor megtalálásához a legrosszabb esetben, ha:
+a) a tábla sorai rendezetlenül vannak tárolva és nem használunk indexet
+b) a tábla sorai rendezetten vannak tárolva és nem használunk indexet
+c) a fenti B+ fa indexet használjuk (ehhez ki kell számolnunk a B(I)-t)

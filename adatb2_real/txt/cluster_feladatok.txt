@@ -1,0 +1,28 @@
+﻿Klaszter (CLUSTER)
+------------------
+(DBA_CLUSTERS, DBA_CLU_COLUMNS, DBA_TABLES, DBA_CLUSTER_HASH_EXPRESSIONS)
+
+Hozzunk létre egy DOLGOZO(dazon, nev, beosztas, fonoke, fizetes, oazon ... stb.) 
+és egy OSZTALY(oazon, nev, telephely ... stb.) nevû táblát. 
+(lásd NIKOVITS.DOLGOZO és NIKOVITS.OSZTALY)
+A két táblának az osztály azonosítója (oazon) lesz a közös oszlopa. A két táblát 
+egy index alapú CLUSTEREN hozzuk létre. (Elõbb persze létre kell hozni a clustert is.)
+Majd tegyünk bele 3 osztályt, és osztályonként két dolgozót.
+
+Adjunk meg egy olyan clustert az adatbázisban (ha van ilyen), amelyen még nincs egy tábla sem. 
+
+Adjunk meg egy olyant, amelyiken legalább 2 (esetleg 3) darab tábla van.
+
+Adjunk meg egy olyan clustert, amelynek a cluster kulcsa 3 oszlopból áll.
+(Vigyázat!!! Több tábla is lehet rajta)
+
+HASH CLUSTER
+Hány olyan hash cluster van az adatbázisban, amely nem az oracle alapértelmezés 
+szerinti hash függvényén alapul?
+
+Hozzunk létre egy hash clustert és rajta két táblát, majd szúrjunk be a 
+táblákba sorokat úgy, hogy a két táblának 2-2 sora ugyanabba a blokkba 
+kerüljön. Ellenõrizzük is egy lekérdezéssel, hogy a 4 sor valóban ugyanabban 
+a blokkban van-e. (A ROWID lekérdezésével)
+TIPP: A sorok elhelyezését befolyásolni tudjuk a HASH IS megadásával.
+

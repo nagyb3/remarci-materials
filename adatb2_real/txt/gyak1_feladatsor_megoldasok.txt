@@ -1,0 +1,73 @@
+﻿Adatbázis objektumok
+--------------------
+(DBA_OBJECTS)
+
+
+Milyen típusú objektumai vannak az orauser nevû felhasználónak az adatbázisban?
+ SELECT distinct object_type FROM dba_objects
+ WHERE owner='ORAUSER';
+
+Hány különbözõ típusú objektum van nyilvántartva az adatbázisban?
+ SELECT count(distinct object_type) FROM dba_objects;
+
+Melyek ezek a típusok?
+ SELECT distinct object_type FROM dba_objects;
+
+Kik azok a felhasználók, akiknek van nézete, de nincs triggere?
+ SELECT distinct owner FROM dba_objects WHERE object_type='VIEW'
+  MINUS
+ SELECT distinct owner FROM dba_objects WHERE object_type='TRIGGER';
+
+Kik azok a felhasználók, akiknek több mint 40 táblájuk, de maximum 37 indexük van?
+ SELECT distinct owner FROM dba_objects WHERE object_type='TABLE'
+ GROUP BY owner
+ HAVING count(*) > 40
+  MINUS
+ SELECT distinct owner FROM dba_objects WHERE object_type='INDEX'
+ GROUP BY owner
+ HAVING count(*) >= 37;
+
+
+Táblák oszlopai
+---------------
+(DBA_TAB_COLUMNS)
+
+
+Adjuk meg azoknak a tábláknak a nevét, amelyeknek legalább 8 darab dátum tipusú oszlopa van.
+ SELECT owner, table_name FROM dba_tab_columns
+ WHERE data_type='DATE'
+ GROUP BY owner, table_name
+ HAVING count(*) >= 8;
+
+Adjuk meg azoknak a tábláknak a nevét, amelyeknek 1. es 4. oszlopa is
+VARCHAR2 tipusú.
+ SELECT owner, table_name FROM dba_tab_columns
+ WHERE column_id=1 AND data_type='CHAR'
+  INTERSECT
+ SELECT owner, table_name FROM dba_tab_columns
+ WHERE column_id=4 AND data_type='CHAR';
+
+Írjunk meg egy plsql procedúrát, amelyik a paraméterül kapott karakterlánc alapján 
+kiírja azoknak a tábláknak a nevét és tulajdonosát, amelyek az adott karakterlánccal 
+kezdõdnek. (Ha a paraméter kisbetûs, akkor is mûködjön a procedúra!)
+     PROCEDURE table_print(p_kar VARCHAR2) 
+A fenti procedúra segítségével írjuk ki a Z betûvel kezdõdõ táblák nevét és tulajdonosát.
+
+CREATE OR REPLACE PROCEDURE table_print(p_kar VARCHAR2) is
+  CURSOR curs1 IS 
+  select owner,table_name from dba_tables
+  where upper(table_name) like upper(p_kar)||'%';
+  rec curs1%ROWTYPE;
+BEGIN
+  OPEN curs1;
+  LOOP
+    FETCH curs1 INTO rec;
+    EXIT WHEN curs1%NOTFOUND;
+    dbms_output.put_line(rec.owner||' - '||rec.table_name);
+  END LOOP;
+  CLOSE curs1;
+END;
+/
+Test:
+set serveroutput on
+execute table_print('z');

@@ -1,0 +1,18 @@
+﻿Gépes feladatok:
+
+- Rendszerkatalógusok (DBA_TABLES, DBA_OBJECTS stb.)
+  - Pl. kinek van a legtöbb oszlopból álló táblája
+- Tárolással kapcsolatos lekérdezések (DBA_SEGMENTS, DBA_EXTENTS stb.)
+  - Pl. Melyik felhasználó indexei foglalnal a legtöbb helyet az adatbázisban?
+- ROWID feladatok (PL/SQL feladatok)
+  - Pl. Hány százalékban üresek a VDANI.DOLGOZO táblához lefoglalt blokkok
+- Indexek létrehozása, információk lekérdezése
+  - Pl. Kiknek van csökkenő sorrendben indexelt oszlopú indexe?
+- Speciális táblák létrehozása, információk lekérdezése
+  - Pl. Kinek van a legtöbb alpartícióból álló táblája az adatbázisban?
+  - Pl. Adjuk meg azokat a klasztereket, amelyeken három tábla van
+
+Papíros feladatok:
+- Beszúrás B-fába
+- Bitmap index készítése, tömörítése, lekérdezés megválaszolása
+- Lineáris hashelés

@@ -1,0 +1,232 @@
+﻿Végrehajtási terv lekérdezése:
+
+1. Mindenki hozza létre a PLAN_TABLE nevű táblát. A fájl végén megtalálható az utasítás. Ezt csak egyszer kell megtenni.
+
+2. Végrehajtási terv lekérdezése. Írjuk a következő kulcsszavakat a lekérdezés elejére: EXPLAIN PLAN FOR. Futtassuk azt utasítást. Példa:
+EXPLAIN PLAN FOR
+SELECT *
+FROM VDANI.DOLGOZO;
+
+3. A következő utasítás futtatása megadja a végrehajtási tervet: 
+select plan_table_output from table(dbms_xplan.display());
+
+----------------------------------------------------------------------------------------
+
+Gyakran előforduló műveletek:
+
+Tábla elérése:
+
+TABLE ACCESS FULL
+             HASH          -- hash clusteren levõ táblák elérése a hash függvény alapján
+             CLUSTER       -- index clusteren levõ táblák elérése
+             BY INDEX ROWID
+             BY USER ROWID
+             BY GLOBAL INDEX ROWID
+             BY LOCAL INDEX ROWID
+
+PARTITION RANGE ALL        -- összes partíció olvasása
+PARTITION RANGE SINGLE     -- egyetlen partíció olvasása
+PARTITION RANGE ITERATOR   -- több partíció olvasása
+INLIST ITERATOR            -- mûveletek ismétlése
+
+SORT AGGREGATE             -- ha csak egy sor lesz a csoportosítás végén
+     UNIQUE                -- ismétlõdések megszüntetése, rendezés alapú algoritmussal
+     GROUP BY              -- ha több csoport lesz
+     JOIN                  -- elõrendezés a join-hoz
+     ORDER				   -- egyszerű order by
+
+HASH UNIQUE                -- ismétlõdések megszüntetése, hash alapú algoritmus
+HASH GROUP 				   -- csoportosítás, hash alapú algoritmussal
+FILTER                     -- egy sorhalmaz szûrése	
+
+Halmazműveletek:
+
+UNION-ALL
+MINUS
+INTERSECTION
+	
+Összekapcsolások:
+
+NESTED LOOPS               -- join mûvelet nested loops  algoritmussal
+MERGE JOIN                 -- join mûvelet merge join algoritmussal
+HASH JOIN                  -- join mûvelet hash join algoritmussal
+HASH JOIN OUTER
+HASH JOIN ANTI             -- not exist-hez lehet jó
+HASH JOIN ANTI NA          -- NULL aware, vagyis NULL is elõfordulhat
+HASH JOIN SEMI             -- ha a join után csak az egyik tábla adatai kellenek	
+
+Index elérés:
+
+INDEX FULL SCAN            -- teljes index végigolvasása növekvõ sorrendben
+INDEX FULL SCAN DESCENDING -- teljes index végigolvasása csökkenõ sorrendben
+INDEX FAST FULL SCAN       -- teljes index végigolvasása, egyszerre több blokkot olvasva
+INDEX RANGE SCAN           -- intervallum keresés növekvõ sorrendben (DESCENDING -> csökkenõ)
+INDEX UNIQUE SCAN          -- egyedi érték keresés
+INDEX SKIP SCAN            -- több oszlopos index olvasása, az elsõ oszlopok ismerete nélkül
+
+BITMAP INDEX SINGLE VALUE      -- egyetlen bitvektor visszaadása
+BITMAP AND                     -- bitmapek közötti logikai mûvelet
+BITMAP OR                      -- bitmapek közötti logikai mûvelet
+BITMAP CONVERSION TO ROWIDS    -- bitmap átalakítása sorazonosítóvá
+BITMAP CONVERSION FROM ROWIDS  -- sorazonosító átalakítása bitmappé
+BITMAP CONVERSION COUNT        -- ha csak a sorazonosítók számára van szükség
+
+----------------------------------------------------------------------------------------
+
+Tippek (hint) adása az optimalizálónak
+
+Fontos megjegyzések:
+
+Mindig csak arra az utasitás blokkra vonatkoznak, amiben szerepelnek. 
+Az utasitás blokk a következõk egyike lehet:
+- Egyszerû SELECT, UPDATE, DELETE INSERT utasitas
+- Komplex utasitásban a subquery, vagy a kulsõ utasitás (pl. INSERT ... SELECT ...)
+- Összetett utasitás egyik része (pl. SELECT ... UNION SELECT ... esetén)
+A tipp csak közvetlenül az utasitás kulcsszava után jöhet megjegyzésben.
+[SELECT|DELETE|UPDATE|INSERT]   /*+  tipp lista  */    (a '+' elõtt nincs szoköz !!! )
+Ha hiba van a hint-ben az oracle figyelmen kívül hagyja de nem jelez hibát.
+
+Példák:
+SELECT /*+ tipp lista */  * FROM emp WHERE ...
+SELECT /*+ tipp lista */  * FROM emp WHERE deptno IN ( SELECT /*+ tipp lista */  deptno FROM ...)
+INSERT /*+ tipp lista */  ... SELECT /*+ tipp lista */  ...
+SELECT /*+ tipp lista */  ...  UNION  SELECT /*+ tipp lista */  ...
+
+Fontos! Ha minõsített tábla szerepel a lekérdezésben akkor használjunk aliast, pl.
+SELECT /*+ full(c) */ ... FROM nikovits.cikk c ...
+
+----------------------------------------------------------------------------------------
+
+Gyakran előforduló hintek:
+
+ALL_ROWS
+Költseg alapú optimalizalast valaszt es azon belul is a teljes lekerdezesre optimalizal.
+
+FIRST_ROWS(n)  
+A legjobb valaszidõre optimalizál. Az lekérdezés elsõ n sorát a lehetõ leggyorsabban
+próbálja meg visszaadni. Ha nem adjuk meg n-et, akkor n=1-et tekinti.
+
+FULL(tabla)   vagy  FULL(aliasnev)
+Nem hasznal indexet, hanem full table scant.
+
+CLUSTER(tabla)
+Csak index clusteren lévõ tábláknál van értelme. 
+
+HASH(tabla)
+Csak hash clusteren lévõ táblánál van értelme.
+
+INDEX(tabla  [indexlista])
+A tablat index alapjan eri el. Ha nem adunk meg index nevet (vagy többet adunk meg) 
+akkor a legolcsóbb költségû indexet (a felsoroltakbol) használja.
+
+INDEX_ASC(tabla  [indexlista])
+Növekvõ sorrendben eri el az index bejegyzeseket.
+
+INDEX_DESC(tabla  [indexlista])
+Megfordítja az alapértelmezett index bejárási sorrendet. Csökkenõ sorrendben éri el 
+az index bejegyzéseket. (Illetve csökkenõ indexnél növekvõben.)
+
+INDEX_COMBINE(tabla  [indexlista])
+Bitmap indexek segítségével próbálja meg elérni az adatokat.
+
+INDEX_FFS(tabla  [indexlista])
+Fast full index scan-re utasítja az optimalizálót a teljes tábla olvasás helyett.
+
+INDEX_JOIN(tabla  [indexlista])
+Több index használatával és a sorazonosítók join-olásával érje el a táblát.
+
+AND_EQUAL(tabla  [indexlista])
+Több index egyidejû használatával éri el a táblát. A sorazonosítók metszetét képezi.
+
+NO_INDEX(tabla  [indexlista])
+A megadott indexek használatáról lebeszéli az optimalizálót.
+
+NO_INDEX_FFS(tabla  [indexlista])
+A megadott indexek használatáról lebeszéli az optimalizálót.
+
+NO_EXPAND
+Ha a lekérdezésben OR vagy IN szerepel, akkor az optimalizáló hajlamos az egyes
+esetek szerint külön-külön keresni (pl. index használatával). Ez a hint errõl 
+beszéli le az optimalizálót.
+
+USE_CONCAT
+Az OR feltételekbõl uniót hoz létre, és így hajtja végre a lekérdezést.
+
+LEADING(táblalista)
+A megadott táblákkal kezdi a lekérdezés végrehajtását. (Hasonló az ORDERED-hez)
+
+ORDERED
+A táblákat abban a sorrendben fogja join-olni, ahogy azok a FROM után megjelennek.
+
+USE_HASH(táblalista)
+A megadott tablakat hash join-nal join-olja a többi adatforrashoz. 
+NO_USE_HASH(táblalista)
+Az elõzõ ellentéte.
+
+USE_NL(táblalista)
+A megadott tablakat nested looppal join-olja a többi adatforrashoz. A megadott tabla 
+lesz a belsõ ciklus tablaja.
+NO_USE_NL(táblalista)
+Az elõzõ ellentéte
+
+USE_MERGE(táblalista)
+A megadott tablakat sort-merge-el join-olja a többi adatforrashoz.
+NO_USE_MERGE(tablalista) 
+Az elõzõ ellentéte.
+
+NL_SJ, HASH_SJ, MERGE_SJ
+NL_AJ, HASH_AJ, MERGE_AJ
+A fentieket az alkérdésben lehet hintként megadni, és ekkor (ha lehetséges)
+az oracle a megfelelõ algoritmussal fogja a semi-joint, illetve anti-joint
+elvégezni.
+
+CACHE(tabla)
+Hatasara a tabla blokkjai a buffer cache LRU listajanak "friss" vegere kerulnek. 
+Kis tablaknal hasznos, hogy sokaig csücsülhessenek a bufferben.
+
+NOCACHE(tabla)
+Hatasara a tabla blokkjai a buffer cache LRU listajanak "régi" vegere kerulnek. 
+Alapertelmezes szerint is ide kerulnenek.
+
+----------------------------------------------------------------------------------------
+
+PLAN_TABLE létrehozása:
+
+create table PLAN_TABLE (
+        statement_id       varchar2(30),
+        plan_id            number,
+        timestamp          date,
+        remarks            varchar2(4000),
+        operation          varchar2(30),
+        options            varchar2(255),
+        object_node        varchar2(128),
+        object_owner       varchar2(30),
+        object_name        varchar2(30),
+        object_alias       varchar2(65),
+        object_instance    numeric,
+        object_type        varchar2(30),
+        optimizer          varchar2(255),
+        search_columns     number,
+        id                 numeric,
+        parent_id          numeric,
+        depth              numeric,
+        position           numeric,
+        cost               numeric,
+        cardinality        numeric,
+        bytes              numeric,
+        other_tag          varchar2(255),
+        partition_start    varchar2(255),
+        partition_stop     varchar2(255),
+        partition_id       numeric,
+        other              long,
+        distribution       varchar2(30),
+        cpu_cost           numeric,
+        io_cost            numeric,
+        temp_space         numeric,
+        access_predicates  varchar2(4000),
+        filter_predicates  varchar2(4000),
+        projection         varchar2(4000),
+        time               numeric,
+        qblock_name        varchar2(30),
+        other_xml          clob
+);

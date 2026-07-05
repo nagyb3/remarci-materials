@@ -1,0 +1,64 @@
+﻿Utolsó módosítás: 2023.09.10
+
+Tisztelt Hallgatók!
+
+Jelen pillanatban két Oracle adatbázis érhető el a gyakorlatok feladatainak
+megoldására. A nevük ULLMAN, illetve ARAMIS (mindkettő Oracle Database 12c).
+Az azonosítókat a félévek elején hozom létre a gyakorlatvezetőktől kapott 
+listák alapján, és minden nyáron (a nyár végén) kitörlöm az összes azonosítót. 
+Az adatbázisbeli azonosítója mindenkinek megegyezik a NEPTUN kódjával. 
+A kezdeti jelszót a gyakorlatvezetők ismertetik az első órákon.
+
+!!! Figyelem !!!
+Hallgatói levél alapján nem készítek azonosítót, csak ha a gyakorlatvezetőtől
+érkezik a kérés a szükséges adatok (név, neptun kód, tantárgy) megadásával.
+
+Az általam adott kezdeti jelszó csak egy rövid ideig érvényes, és a későbbiekben
+is bizonyos idő után lejár. A lejárati idő lekérdezhető a következő utasítással: 
+
+SELECT username, account_status, expiry_date FROM DBA_USERS WHERE username=user; 
+
+Kérek mindenkit, hogy a jelszavát változtassa meg az alábbi SQL utasítással! 
+
+ALTER USER usernév IDENTIFIED BY új_jelszó; 
+
+Ha valaki nem tudna bejelentkezni valamelyik adatbázisba, mert elfelejtette a 
+jelszavát, vagy lock-olódott az azonosítója, az írjon nekem levelet és egy napon 
+belül adok új jelszót, és megírom azt a válaszlevélben!
+
+Az adatbázisok eléréséhez szükséges paraméterek:
+
+ULLMAN
+host: ullman.inf.elte.hu
+port: 1521
+service_name: ullman
+
+ARAMIS
+host: aramis.inf.elte.hu
+port: 1521
+service_name: aramis
+
+
+Az Oracle cég honlapjáról letölthető egy ingyenesen használható SqlDeveloper 
+nevű program, ami kényelmes felületet biztosít az SQL parancsok kiadására. 
+Nem igényel bonyolult telepítést, csak ki kell csomagolni a letöltött .zip 
+állományt és lehet futtatni. Természetesen a programnak meg kell adni az 
+adatbázis eléréséhez szükséges paramétereket, amiről az előző szakaszban írtam.
+
+Mindezt úgy tehetjük meg, hogy létrehozunk egy új kapcsolatot (ha még korábban ezt
+nem tettük meg) és a fenti 3 paramétert beírjuk a megfelelő mezőkbe.
+Ezen kívül meg kell még adni a "user" és "password" mezőket, valamint adnunk kell
+a megadott paramétereket tartalmazó kapcsolatnak egy nevet. Ha a kapcsolatot 
+az előbb említett néven elmentjük, akkor legközelebb nem kell ismét kitöltenünk
+a mezőket, hanem elég lesz a kapcsolat nevére duplán kattintani.
+
+Mindkét adatbázis tűzfal védelem mögött helyezkedik el, így azokat távolról, 
+az ELTE ip címtartományán kívülről nem lehet közvetlenül elérni. Az otthoni munkához 
+szükségük lesz még egy caesar azonosítóra, és úgynevezett "tunnel" vagy "port forward"
+technológiával a caesar gépen keresztül már el tudják érni az adatbázisokat.
+Ennek részleteit a gyakorlatvezetők ismertetik.
+
+Mindenkinek jó munkát kívánok!
+
+Nikovits Tibor
+nikovits@inf.elte.hu

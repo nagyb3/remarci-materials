@@ -1,0 +1,114 @@
+﻿Elméleti rész
+
+1. feladat
+
+UNDO MEGOLDÁS:
+
+write(A, 90)
+output(A)
+write(E, 50)
+output(E)
+write(C, 55)
+output(C)
+<abort V>
+<abort R>
+FLUSH LOG
+
+2. feladat
+
+REDO MEGOLDÁS:
+
+write(B, 20)
+output(D)
+write(D, 80)
+output(D)
+write(B, 40)
+output(B)
+write(D, 50)
+output(D)
+<end U>
+FLUSH LOG
+
+3. feladat
+
+Egy lehetséges megoldás:
+
+1. R2(B), R2(A), W2(B), R2(C), R1(A), W2(C), R1(B), W1(A), R1(C), W1(B)
+2. R2(B), R2(A), W2(B), R2(C), R1(A), R1(B), W2(C), W1(A), R1(C), W1(B) 
+3. R2(B), R2(A), W2(B), R1(A), R2(C), R1(B), W2(C), W1(A), R1(C), W1(B)
+4. R2(B), R2(A), W2(B), R1(A), R2(C), R1(B), W1(A), W2(C), R1(C), W1(B)
+
+4. feladat
+
+Topologikus sorrendek:
+a) 1,2,3,4 és 1,2,4,3
+b) Van benne kör: 2->4->3->2
+
+Gépes rész
+
+5. feladat
+
+Egy lehetséges megoldás:
+
+create table dolgozo_zh_test as select * from vdani.dolgozo_zh;
+create index zh_ind on dolgozo_zh_test(dkod);
+
+select * from dolgozo_zh_test
+where dkod=7788;
+
+----------------------------------------------------------------
+| Id  | Operation                   | Name            | E-Rows |
+----------------------------------------------------------------
+|   0 | SELECT STATEMENT            |                 |        |
+|   1 |  TABLE ACCESS BY INDEX ROWID| DOLGOZO_ZH_TEST |      1 |
+|*  2 |   INDEX UNIQUE SCAN         | EMP             |      1 |
+----------------------------------------------------------------
+
+6. feladat
+
+select /*+ use_nl(dolgozo_zh osztaly_zh) */ dnev 
+from dolgozo_zh natural join osztaly_zh
+where fizetes > 2000
+and telephely='NEW YORK';
+
+--------------------------------------------------
+| Id  | Operation          | Name       | E-Rows |
+--------------------------------------------------
+|   0 | SELECT STATEMENT   |            |        |
+|   1 |  NESTED LOOPS      |            |      3 |
+|*  2 |   TABLE ACCESS FULL| OSZTALY_ZH |      1 |
+|*  3 |   TABLE ACCESS FULL| DOLGOZO_ZH |      3 |
+--------------------------------------------------
+
+select /*+ use_merge(dolgozo_zh osztaly_zh) */ dnev 
+from dolgozo_zh natural join osztaly_zh
+where fizetes > 2000
+and telephely='NEW YORK';
+
+------------------------------------------------------------------------------
+| Id  | Operation           | Name       | E-Rows |  OMem |  1Mem | Used-Mem |
+------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT    |            |        |       |       |          |
+|   1 |  MERGE JOIN         |            |      3 |       |       |          |
+|   2 |   SORT JOIN         |            |      1 |  2048 |  2048 | 2048  (0)|
+|*  3 |    TABLE ACCESS FULL| OSZTALY_ZH |      1 |       |       |          |
+|*  4 |   SORT JOIN         |            |     10 |  2048 |  2048 | 2048  (0)|
+|*  5 |    TABLE ACCESS FULL| DOLGOZO_ZH |     10 |       |       |          |
+------------------------------------------------------------------------------
+
+7. feladat
+
+a)
+
+select /*+ full(z) */
+from dolgozo_zh z
+union
+select /*+ full(z) */
+from dolgozo_zh z;
+
+b)
+
+select /*+ use_hash(d o) */ d.oazon
+from dolgozo_zh d left outer join osztaly_zh o
+on d.oazon = o.oazon
+group by d.oazon;

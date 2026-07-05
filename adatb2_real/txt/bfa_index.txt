@@ -1,0 +1,50 @@
+﻿B+ fa építés
+
+Tippek beszúráshoz:
+
+1. Levél csúcs kettéosztásakor minden kulcsot megőrzünk a régi és az új csúcsban. 
+Egy új kulcs-mutató párt küldünk felfelé a szülő csúcsba, amit ott kell elhelyezni.
+
+2. Belső csúcs kettéosztásakor (N és M csúcsra) a mutatók első fele az N-be, 
+a második fele az M-be kerül, de középen kimarad egy kulcs,
+ami az M-en keresztül elérhető legkisebb kulcsot tartalmazza. 
+Ez nem kerül sem N-be, sem M-be, hanem felmegy M és N közös szülőjébe 
+az M-re mutató mutatóval együtt
+
+Feladat:
+
+Tegyük fel, hogy egy B+ fa blokkjában 3 kulcs fér el és 4 mutató. 
+A kulcsok különbözőek. Az alábbi fa a kiindulóállapotunk:
+
+{[15,39]50[50,70]}
+
+Adjuk meg a B+ fa minden olyan állapotát, amikor egy érték beszúrásra kerül.
+A megoldás megtalálható a feladat szövege után.
+Szúrjuk be a B+ fába az alábbi kulcsértékeket a megadott sorrendben:
+79, 83, 72, 43, 75, 45
+
+Megoldás:
+
+1. lépés: a fa állapota a 79-es érték beszúrása után:
+
+{[15,39]50[50,70,79]}
+
+2. lépés: a fa állapota a 83-as érték beszúrása után:
+
+{[15,39]50[50,70]79[79,83]}
+
+3. lépés: a fa állapota a 72-es érték beszúrása után:
+
+{[15,39]50[50,70,72]79[79,83]}
+
+4. lépés: a fa állapota a 43-as érték beszúrása után:
+
+{[15,39,43]50[50,70,72]79[79,83]}
+
+5. lépés: a fa állapota a 75-ös érték beszúrása után:
+
+{[15,39,43]50[50,70]72[72,75]79[79,83]}
+
+6. lépés: a fa állapota a 45-ös érték beszúrása után:
+
+{[(15,39)43(43,45)50(50,70)]72[(72,75)79(79,83)]}

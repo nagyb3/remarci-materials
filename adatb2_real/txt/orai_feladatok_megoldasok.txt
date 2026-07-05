@@ -1,0 +1,137 @@
+﻿Órai feladatok
+
+1. feladat
+
+Melyek azok az objektum típusok, amelyek tényleges tárolást igényelnek, vagyis
+tartoznak hozzájuk adatblokkok? (A többinek csak a definíciója tárolódik adatszótárban)
+
+Megoldás:
+
+select distinct object_type from dba_objects where data_object_id is not null;
+
+INDEX PARTITION
+TABLE SUBPARTITION
+TABLE PARTITION
+LOB PARTITION
+LOB
+TABLE
+INDEX
+CLUSTER
+
+Magyarázat: Ahol nincs data_object_id ott nincs szükség tárolásra. 
+Attól, hogy valaminek nincs szegmense még igénylehet tárolást, csak lehet még nincs létrehozva.
+
+----------------------------------------------------------------------------------------------------------
+
+2. feladat
+
+Melyek azok az objektum típusok, amelyek nem igényelnek tényleges tárolást, vagyis nem
+tartoznak hozzájuk adatblokkok? Mi a metszete az előző lekérdezéssel?
+
+
+Megoldás:
+
+select distinct object_type from dba_objects where data_object_id is not null
+intersect
+select distinct object_type from dba_objects where data_object_id is null;
+
+Magyarázat: A particionált táblák és indexek esetében van objektuma a táblának is és külön a partícióknak.
+De csak a partíciókhoz tartozik tárolanda adat.
+
+----------------------------------------------------------------------------------------------------------
+
+
+3. feladat
+
+Adjuk meg azoknak a tábláknak a tulajdonosát és nevét, amelyeknek van 'Z' betuvel 
+kezdodo oszlopa.
+
+Megoldás:
+
+select distinct owner, table_name from dba_tab_columns
+where column_name like 'Z%';
+
+Magyarázat: Szükséges a distinct kulcsszó, mivel ha egy táblában több ilyen oszlop is szerepel, 
+akkor többször kapjuk meg a tábla nevét.
+
+----------------------------------------------------------------------------------------------------------
+
+
+4. feladat
+
+Adjuk meg azoknak a tábláknak a nevét, amelyeknek 1. es 4. oszlopa is
+VARCHAR2 tipusú.
+
+Megoldás:
+
+SELECT owner, table_name FROM dba_tab_columns
+WHERE column_id=1 AND data_type='VARCHAR2'
+INTERSECT
+SELECT owner, table_name FROM dba_tab_columns
+WHERE column_id=4 AND data_type='VARCHAR2';
+
+Magyarázat: A dba_tab_columns rendszerkatalógusban a táblák oszlopairól találhatóak információk,
+ahol minden oszlopnak van egy azonosítója. Innen megtudhatjuk az oszlopok sorrendjét.
+
+----------------------------------------------------------------------------------------------------------
+
+
+5. feladat
+
+
+Melyik a legnagyobb méretű tábla szegmens az adatbázisban (a tulajdonost is adjuk meg) 
+és hány extensből áll? (A particionált táblákat most ne vegyük figyelembe.)
+
+
+Megoldás:
+
+select segment_name, extents from
+(select * from dba_segments where segment_type='TABLE'
+order by bytes desc)
+where rownum <= 1;
+
+Magyarázat: A méret összehasonlításakor több oszlopot is figyelembe vehetünk: extensek száma, bájtok száma, stb.
+
+----------------------------------------------------------------------------------------------------------
+
+6. feladat
+
+Van-e a NIKOVITS felhasználónak olyan táblája, amelyik több adatfájlban is foglal helyet? (Aramis)
+
+
+Megoldás:
+
+SELECT segment_name, count(distinct file_id)
+FROM dba_extents WHERE owner='NIKOVITS' AND segment_type='TABLE'
+GROUP BY segment_name HAVING count(distinct file_id) > 1;
+
+
+----------------------------------------------------------------------------------------------------------
+
+7. feladat
+
+A NIKOVITS felhasználó CIKK táblája hány blokkot foglal le az adatbázisban? (ARAMIS)
+(Vagyis hány olyan blokk van, ami ehhez a táblához van rendelve és így
+azok már más táblákhoz nem adhatók hozzá?)
+
+Megoldás:
+
+SELECT bytes, blocks FROM dba_segments
+WHERE owner='NIKOVITS' AND segment_name='CIKK' AND segment_type='TABLE';
+
+----------------------------------------------------------------------------------------------------------
+
+8. feladat
+
+A NIKOVITS felhasználó CIKK táblájának adatai hány blokkban helyezkednek el?
+(Vagyis a tábla sorai ténylegesen hány blokkban vannak tárolva?)
+!!! -> Ez a kérdés nem ugyanaz mint az előző.
+
+Megoldás:
+
+SELECT count(*) FROM
+(SELECT DISTINCT dbms_rowid.rowid_relative_fno(ROWID) fajl,
+        dbms_rowid.rowid_block_number(ROWID) blokk
+ FROM nikovits.cikk);
+
+ 

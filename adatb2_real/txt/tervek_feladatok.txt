@@ -1,0 +1,206 @@
+﻿1. feladat
+
+Írjunk olyan lekérdezéseket, amelyek végrehajtási tervében előfordulnak a következő műveletek:
+
+SORT GROUP BY, SORT ORDER BY, SORT UNIQUE, SORT AGGREGATE,
+HASH JOIN, MERGE JOIN, NESTED LOOPS, UNION-ALL, MINUS,
+INDEX RANGE SCAN, INDEX UNIQUE SCAN, TABLE ACCESS FULL, BITMAP INDEX
+HASH UNIQUE, HASH GROUP BY
+
+----------------------------------------------------------------------------------------
+
+2. feladat
+
+Az VDANI felhasználó Dolgozo, Osztaly es Fiz_kategoria (fizetési kategóriák) tábláiból 
+hozzunk létre saját példányokat (CREATE TABLE dolgozo AS SELECT * FROM vdani.dolgozo; ... stb.), 
+és a saját táblákra vonatkozóan adjuk meg az alábbi lekérdezést:
+
+Adjuk meg azoknak az osztályoknak a neveit, amelyeknek van olyan dolgozója,
+aki az 1-es fizetési kategóriába esik.
+
+Feladat: Hozzunk létre indexet valamelyik táblához, majd adjuk meg a rendszer által
+létrehozott új végrehajtási tervet. Olyan indexet hozzunk létre, amit
+a lekérdezésben használni tud a rendszer és ez legyen is látható az új tervbõl.
+
+----------------------------------------------------------------------------------------
+
+3. feladat
+
+A lekérdezett táblák: VDANI.HIVAS, VDANI.KOZPONT, VDANI.PRIMER (csak az ULLMAN adatbázisban léteznek)
+
+HIVAS   (kozp_azon_hivo, kozp_azon_fog, szol_azon, datum, ora, darab, masodperc)  ~ 45M sor
+KOZPONT (primer, kozp_azon, kozp_nev)                                             ~ 1250 sor
+PRIMER  (korzet, varos, szolgaltato, megye)                                       ~ 70 sor
+
+Lekérdezés: Vegyük 2012. februárjának elsõ hétfõjét, és adjuk meg, hogy összesen
+hány darab telefonhívást kezdeményeztek a megelõzõ napon a Szentendrei primer körzetbõl.
+
+-- futásidõ: 5 sec 
+SELECT sum(darab) FROM VDANI.hivas, VDANI.kozpont, VDANI.primer
+WHERE hivas.kozp_azon_hivo=kozpont.kozp_azon AND kozpont.primer=primer.korzet
+AND primer.varos = 'Szentendre' 
+AND datum + 1 = next_day(to_date('2012.01.31', 'yyyy.mm.dd'),'hétfő');
+
+-- futásidõ: < 1 sec
+SELECT sum(darab) FROM VDANI.hivas, VDANI.kozpont, VDANI.primer
+WHERE hivas.kozp_azon_hivo=kozpont.kozp_azon AND kozpont.primer=primer.korzet
+AND primer.varos = 'Szentendre' 
+AND datum = next_day(to_date('2012.01.31', 'yyyy.mm.dd'),'hétfő') - 1;
+
+Feladat: Derítsd ki mi az oka annak, hogy az egyik lekérdezés gyors a másik pedig lassú!
+
+----------------------------------------------------------------------------------------
+
+4. feladat (tervek és hintek)
+
+A NIKOVITS felhasználó tulajdonában vannak a következõ táblák:
+
+CIKK(ckod, cnev, szin, suly)
+SZALLITO(szkod, sznev, statusz, telephely)
+PROJEKT(pkod, pnev, helyszin)
+SZALLIT(szkod, ckod, pkod, mennyiseg, datum)
+
+A táblákban tárolt adatok jelentése a következõ: 
+A szállítók cikkeket szállítanak a projektekhez, különbözõ idõpontokban, különbözõ mennyiségben.
+A szállításokra vonatkozó információk a SZALLIT táblában találhatók. 
+
+A táblákhoz indexek is vannak létrehozva, ezek tulajdonságait
+a katalógusból nézhetik meg, ha szükség van rá.
+
+Adjuk meg a következõ lekérdezéseket és a hozzájuk tartozó végrehajtási
+tervek fa struktúráját. Minden esetben lehet hinteket használni.
+
+Adjuk meg a piros cikkekre vonatkozó szállitások összmennyiségét.
+(vagyis a szallit táblabeli mennyiségek összegét adjuk meg)
+
+a) Adjuk meg úgy a lekérdezést, hogy egyik táblára se használjon indexet az oracle. 
+b) Adjuk meg úgy a lekérdezést, hogy csak az egyik táblára használjon indexet az oracle. 
+c) Adjuk meg úgy a lekérdezést, hogy mindkét táblára használjon indexet az oracle. 
+d) Adjuk meg úgy a lekérdezést, hogy a két táblát SORT-MERGE módszerrel kapcsolja össze. 
+e) Adjuk meg úgy a lekérdezést, hogy a két táblát NESTED-LOOPS módszerrel kapcsolja össze. 
+f) Adjuk meg úgy a lekérdezést, hogy a két táblát HASH-JOIN módszerrel kapcsolja össze. 
+g) Adjuk meg úgy a lekérdezést, hogy a két táblát NESTED-LOOPS módszerrel kapcsolja össze,
+   és ne használjon indexet. 
+
+
+----------------------------------------------------------------------------------------
+
+5. feladat
+
+Lekérdezések a NIKOVITS.CIKK, SZALLITO, PROJEKT, SZALLIT táblák alapján
+
+1. Adjuk meg azon szállítások összmennyiségét, ahol ckod=2 és szkod=2.
+
+a) Adjuk meg úgy a lekérdezést, hogy ne használjon indexet.
+b) A végrehajtási tervben két indexet használjon, és képezze a sorazonosítók metszetét (AND-EQUAL).
+
+2. Adjuk meg a Pecs-i telephelyû szállítók által szállított piros cikkek összmennyiségét. 
+
+a) Adjuk meg úgy a lekérdezést, hogy a szallit táblát elõször a cikk táblával join-olja az oracle.
+b) Adjuk meg úgy a lekérdezést, hogy a szallit táblát elõször a szallito táblával join-olja az oracle.
+
+
+3. Adjuk meg azon szállítások összmennyiségét, ahol ckod=1 vagy szkod=2. 
+
+a) Adjuk meg úgy a lekérdezést, hogy ne használjon indexet.
+b) A végrehajtási tervben két indexet használjon, és képezze a kapott sorok unióját (CONCATENATION).
+
+
+----------------------------------------------------------------------------------------
+
+
+6. feladat
+
+Adjunk meg egy olyan lekérdezést a fenti táblákra (hintekkel együtt ha szükséges), aminek az alábbi lesz a végrehajtási terve:
+
+
+TERV (OPERATION + OPTIONS + OBJECT_NAME)
+----------------------------------------
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    TABLE ACCESS + FULL + NIKOVITS.CIKK
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    TABLE ACCESS + BY INDEX ROWID + NIKOVITS.CIKK
+      INDEX + UNIQUE SCAN + NIKOVITS.C_CKOD
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN +  + 
+      TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+
+SELECT STATEMENT +  + 
+  HASH + GROUP BY + 
+    HASH JOIN +  + 
+      TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    MERGE JOIN +  + 
+      SORT + JOIN + 
+        TABLE ACCESS + BY INDEX ROWID BATCHED + NIKOVITS.CIKK
+          INDEX + RANGE SCAN + NIKOVITS.C_SZIN
+      SORT + JOIN + 
+        TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN +  + 
+      NESTED LOOPS +  + 
+        TABLE ACCESS + BY INDEX ROWID + NIKOVITS.SZALLITO
+          INDEX + UNIQUE SCAN + NIKOVITS.SZO_SZKOD
+        TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+
+SELECT STATEMENT +  + 
+  FILTER +  + 
+    HASH + GROUP BY + 
+      HASH JOIN +  + 
+        NESTED LOOPS +  + 
+          TABLE ACCESS + BY INDEX ROWID + NIKOVITS.SZALLITO
+            INDEX + UNIQUE SCAN + NIKOVITS.SZO_SZKOD
+          TABLE ACCESS + FULL + NIKOVITS.PROJEKT
+        TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN + ANTI NA + 
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+      TABLE ACCESS + FULL + NIKOVITS.CIKK
+
+
+SELECT STATEMENT +  + 
+  SORT + AGGREGATE + 
+    HASH JOIN + SEMI + 
+      TABLE ACCESS + FULL + NIKOVITS.SZALLIT
+      TABLE ACCESS + FULL + NIKOVITS.CIKK
+
+
+----------------------------------------------------------------------------------------
+
+7. feladat
+
+Futás tesztek
+
+A HIVAS tábla dátum oszlop szerint partícionált, 6 partíciója van: 2012. év 01, 02 ... 06 hónapjai
+Van egy HIVAS_v2 tábla azonos adattartalommal partícionálás nélkül.
+
+- Mennyi ideig tart a HIVAS table teljes végigolvasása?
+- Előnyt jelent a partícionálás (HIVAS vs HIVAS_V2)?
+- Hogyan változik a végrehajtási idő ha van feltételünk a dátum oszlopra?
+- Hogyan változik a végrehajtási idő ha aritmetikai műveletet kell elvégeznünk minden sorra?
+- Mennyi ideig tart a lekérdezés ha csak egy partíciót kell lekérdezni?
+- Kérdezzük le a HIVAS_V2 táblát index használatával és anélkül, úgy hogy a lekérdezésben egy konkrét dátumra szűrűnk.
+- Hogy változik a futási idő, ha az előző lekérdezésben sok dátum szerepel a feltételben (pl. between)?
+- Hogyan változik a futási idő, ha csak az indexet olvassuk? (pl. count(*))
+- Adjunk példát arra, hogy a különböző join algoritmusok ideje hogyan tér el egymástól nagy táblák összekapcsolása esetén.

@@ -1,0 +1,108 @@
+﻿Elméleti rész
+
+1. feladat
+
+Add meg a helyreállítás lépéseit, az alábbi UNDO típusú napló alapján. A megoldást a szövegmezőbe másold be vagy add be papíron.
+
+<START R>
+<START T>
+<T,A,10>
+<START U>
+<U,B,20>
+<T,A,30>
+<COMMIT T>
+<START V>
+<U,D,80>
+<R,C,55>
+<U,B,40>
+<V,E,50>
+<U,D,50>
+<COMMIT U>
+<R,A,90>
+
+2. feladat
+
+Add meg a helyreállítás lépéseit, az alábbi REDO típusú napló alapján. A megoldást a szövegmezőbe másold be vagy add be papíron.
+
+<START R>
+<START T>
+<T,A,10>
+<START U>
+<U,B,20>
+<T,A,30>
+<COMMIT T>
+<START V>
+<U,D,80>
+<R,C,55>
+<U,B,40>
+<V,E,50>
+<U,D,50>
+<COMMIT U>
+<END T>
+<R,A,90>
+
+3. feladat
+
+Adja meg az alábbi tranzakciók 4 tetszőleges konfliktus sorbarendezhető (de nem soros) ütemezéstét!
+
+T1: R1(A), R1(B), W1(A), R1(C), W1(B)
+T2: R2(B), R2(A), W2(B), R2(C), W2(C)
+
+4. feladat
+
+Rajzold fel alábbi ütemezések megelőzési gráfját. Add meg az összes lehetséges topologikus sorrendet. 
+A megoldást tetszőleges alkalmazásban elkészítehted és különböző formátumokban feltöltheted: kép, excel, word, vagy akár papíron is beadhatod.
+
+a) R1(A); W2(B); R1(C); R2(A); R4(B); W2(A); R3(B); W1(C); R3(C); W4(D);
+b) R1(A); R3(B); R4(C); R1(B); R2(A); W2(A); W2(B); W3(C); R4(A); W4(D);
+
+
+Gépes rész
+
+5. feladat
+
+a) Készíts egy saját táblát dolgozo_zh néven a VDANI.DOLGOZO_ZH tábla alapján. (1 pont)
+b) Hozz létre tetszőleges típusú indexet a létrehozott táblád valamelyik oszlopra. (4 pont)
+c) Írj egy lekérdezést, amely használja a létrehozott indexet (akár hintek segítségével),
+és mutasd meg a végrehajtási tervét. (5 pont)
+
+Bemásolni: tábla és index létrehozó utasítások, lekérdezés, végrehajtási terv.
+
+6. feladat
+
+Az alábbi feladatokhoz használd a VDANI.DOLGOZO_ZH és VDANI.OSZTALY_ZH táblákat.
+Minden feladathoz másold be a lekérdezést és a végrehajtási tervet is.
+
+a) Add meg egy lekérdezésben azoknak a dolgozóknak a nevét, akik fizetése nagyobb, mint 2000 és a NEW YORK-i telephelyen dolgoznak. 
+	A lekérdezésben használj összekapcsolást.
+b) Add meg úgy a lekérdezést, hogy az összekapcsolás NESTED LOOP algoritmussal történjen.
+b) Add meg úgy a lekérdezést, hogy az összekapcsolás MERGE JOIN algoritmussal történjen.
+
+
+7.feladat
+
+Az alábbi feladatokhoz használd a VDANI.DOLGOZO_ZH és VDANI.OSZTALY_ZH táblákat.
+Írj olyan lekérdezést (akár hintek segítségével), amelynek az alábbi lesz a végrehajtási terve.
+Bemásolni a feladatokhoz: lekérdezés és végrehajtási terv.
+
+a)
+------------------------------------------------------------------------------
+| Id  | Operation           | Name       | E-Rows |  OMem |  1Mem | Used-Mem |
+------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT    |            |        |       |       |          |
+|   1 |  SORT UNIQUE        |            |     11 |  2048 |  2048 | 2048  (0)|
+|   2 |   UNION-ALL         |            |        |       |       |          |
+|*  3 |    TABLE ACCESS FULL| DOLGOZO_ZH |      8 |       |       |          |
+|*  4 |    TABLE ACCESS FULL| DOLGOZO_ZH |      3 |       |       |          |
+------------------------------------------------------------------------------
+
+b)
+------------------------------------------------------------------------------
+| Id  | Operation           | Name       | E-Rows |  OMem |  1Mem | Used-Mem |
+------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT    |            |        |       |       |          |
+|   1 |  HASH GROUP BY      |            |      3 |  1214K|  1214K|  890K (0)|
+|*  2 |   HASH JOIN OUTER   |            |     15 |  2545K|  2545K| 1143K (0)|
+|   3 |    TABLE ACCESS FULL| OSZTALY_ZH |      4 |       |       |          |
+|*  4 |    TABLE ACCESS FULL| DOLGOZO_ZH |     14 |       |       |          |
+------------------------------------------------------------------------------

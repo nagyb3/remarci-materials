@@ -1,0 +1,66 @@
+﻿Adattárolással kapcsolatos fogalmak
+-----------------------------------
+(DBA_TABLES, DBA_DATA_FILES, DBA_TEMP_FILES, DBA_TABLESPACES, DBA_SEGMENTS, DBA_EXTENTS, DBA_FREE_SPACE)
+
+1. Adjuk meg az adatbázishoz tartozó adatfile-ok (és temporális fájlok) nevét és méretét
+méret szerint csökkenő sorrendben.
+
+2. Adjuk meg, hogy milyen tablaterek vannak letrehozva az adatbazisban,
+az egyes tablaterek hany adatfajlbol allnak, es mekkora az osszmeretuk.
+(tablater_nev, fajlok_szama, osszmeret)
+!!! Vigyázat, van temporális táblatér is.
+
+3. Mekkora az adatblokkok merete a USERS táblatéren?
+
+4. Van-e olyan táblatér, amelynek nincs DBA_DATA_FILES-beli adatfájlja?
+Ennek adatai hol tárolódnak? -> DBA_TEMP_FILES
+
+5. Melyik a legnagyobb méretű tábla szegmens az adatbázisban (a tulajdonost is adjuk meg) 
+és hány extensből áll? (A particionált táblákat most ne vegyük figyelembe.)
+
+6. Melyik a legnagyobb meretű index szegmens az adatbázisban és hány blokkból áll?
+(A particionalt indexeket most ne vegyuk figyelembe.)
+
+7. Adjuk meg adatfájlonkent, hogy az egyes adatfájlokban mennyi a foglalt 
+hely osszesen (írassuk ki a fájlok méretét is).
+
+8. Melyik ket felhasznalo objektumai foglalnak osszesen a legtobb helyet az adatbazisban?
+Vagyis ki foglal a legtöbb helyet, és ki a második legtöbbet?
+
+9. Hány extens van a 'users01.dbf' adatfájlban? Mekkora ezek összmérete?
+10. Hány összefüggő szabad terület van a 'users01.dbf' adatfájlban? Mekkora ezek összmérete?
+11. Hány százalékban foglalt a 'users01.dbf' adatfájl?
+
+11. Van-e a NIKOVITS felhasználónak olyan táblája, amelyik több adatfájlban is foglal helyet? (Aramis)
+
+12. Válasszunk ki a fenti táblákból egyet (pl. tabla_123) és adjuk meg, hogy ez a 
+tábla mely adatfájlokban foglal helyet.
+
+13. Melyik táblatéren van az ORAUSER felhasználó dolgozo táblája?
+
+14. Melyik táblatéren van a NIKOVITS felhasználó ELADASOK táblája? (Miért lesz null?)
+
+-----------------------------------------------------------------------
+15. Írjunk meg egy PLSQL procedúrát, amelyik a paraméterül kapott felhasználónévre kiírja 
+a felhasználó legrégebben létrehozott tábláját, annak méretét byte-okban, valamint a létrehozás
+dátumat.
+CREATE OR REPLACE PROCEDURE regi_tabla(p_user VARCHAR2) IS 
+...
+SET SERVEROUTPUT ON
+EXECUTE regi_tabla('SH');
+-----------------------------------------------------------------------
+
+16. A NIKOVITS felhasználó CIKK táblája hány blokkot foglal le az adatbázisban? (ARAMIS)
+(Vagyis hány olyan blokk van, ami ehhez a táblához van rendelve és így
+azok már más táblákhoz nem adhatók hozzá?)
+
+
+17. A NIKOVITS felhasználó CIKK táblájának adatai melyik blokkokban helyezkednek el, és hány sor van az egyes blokkokban?
+(file_id, blokk_id, darab)
+
+
+18. Írjunk meg egy PLSQL procedúrát, amelyik kiírja, hogy a NIKOVITS.TABLA_123 táblának melyik 
+adatblokkjában hány sor van. Az output formátuma soronként: FILE_ID; BLOKK_ID -> darab
+Példa az output egy sorára: 2;563->306
+Vigyázat!!! Azokat az adatblokkokat is ki kell írni, amelyekben a sorok száma 0, de a tábla
+szegmenséhez tartoznak. Az output FILE_ID majd azon belül BLOKK_ID szerint legyen rendezett.

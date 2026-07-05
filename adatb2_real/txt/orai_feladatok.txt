@@ -1,0 +1,60 @@
+﻿Órai feladatok
+
+1. feladat
+
+Melyek azok az objektum típusok, amelyek tényleges tárolást igényelnek, vagyis
+tartoznak hozzájuk adatblokkok? (A többinek csak a definíciója tárolódik adatszótárban)
+
+----------------------------------------------------------------------------------------------------------
+
+2. feladat
+
+Melyek azok az objektum típusok, amelyek nem igényelnek tényleges tárolást, vagyis nem
+tartoznak hozzájuk adatblokkok? Mi a metszete az előző lekérdezéssel?
+
+----------------------------------------------------------------------------------------------------------
+
+
+3. feladat
+
+Adjuk meg azoknak a tábláknak a tulajdonosát és nevét, amelyeknek van 'Z' betuvel 
+kezdodo oszlopa.
+
+----------------------------------------------------------------------------------------------------------
+
+
+4. feladat
+
+Adjuk meg azoknak a tábláknak a nevét, amelyeknek 1. es 4. oszlopa is
+VARCHAR2 tipusú.
+
+----------------------------------------------------------------------------------------------------------
+
+
+5. feladat
+
+
+Melyik a legnagyobb méretű tábla szegmens az adatbázisban (a tulajdonost is adjuk meg) 
+és hány extensből áll? (A particionált táblákat most ne vegyük figyelembe.)
+
+----------------------------------------------------------------------------------------------------------
+
+6. feladat
+
+Van-e a NIKOVITS felhasználónak olyan táblája, amelyik több adatfájlban is foglal helyet? (Aramis)
+
+----------------------------------------------------------------------------------------------------------
+
+7. feladat
+
+A NIKOVITS felhasználó CIKK táblája hány blokkot foglal le az adatbázisban? (ARAMIS)
+(Vagyis hány olyan blokk van, ami ehhez a táblához van rendelve és így
+azok már más táblákhoz nem adhatók hozzá?)
+
+----------------------------------------------------------------------------------------------------------
+
+8. feladat
+
+A NIKOVITS felhasználó CIKK táblájának adatai hány blokkban helyezkednek el?
+(Vagyis a tábla sorai ténylegesen hány blokkban vannak tárolva?)
+!!! -> Ez a kérdés nem ugyanaz mint az előző.

@@ -1,0 +1,281 @@
+﻿Órai feladatok és megoldások:
+--------------------------------------------------------------------------------------------------
+
+UNDO 
+
+Napló:
+< START T>
+<T, A, 10>
+<START U>
+<U, B, 20>
+<T, C, 30>
+<U, D, 40>
+<T, A, 11>
+<U, B, 21>
+<COMMIT U>
+<T, E, 50>
+<COMMIT T>
+
+Adjuk meg a helyreállítás-kezelő
+tevékenységeit, ha az utolsó lemezre került
+naplóbejegyzés:
+1. <start U>
+2. <U, D, 40>
+3. <COMMIT U>
+4. <T, E, 50>
+5. <COMMIT T>
+
+Megoldások:
+
+1)
+WRITE(A, 10)
+OUTPUT(A)
+<ABORT T>
+<ABORT U>
+FLUSH LOG
+
+2)
+WRITE(D,40)
+OUTPUT(D)
+WRITE(C,30)
+OUTPUT(C)
+WRITE(B,20)
+OUTPUT(B)
+<ABORT U>
+WRITE(A,10)
+OUTPUT(A)
+<ABORT T>
+FLUSH LOG
+
+3)
+WRITE(A, 11)
+OUTPUT(A)
+WRITE(C, 30)
+OUTPUT(C)
+WRITE(A, 10)
+OUTPUT(A)
+<ABORT T>
+FLUSH LOG
+
+4)
+WRITE(E, 50)
+OUTPUT(E)
+WRITE(A, 11)
+OUTPUT(A)
+WRITE(C, 30)
+OUTPUT(C)
+WRITE(A, 10)
+OUTPUT(A)
+<ABORT T>
+FLUSH LOG
+
+5)
+Semmit nem kell helyreállítani
+
+--------------------------------------------------------------------------------------------------
+
+UNDO ellenőrzőpont feladatok
+
+Napló:
+< START T>
+<T, A, 10>
+< START U>
+<T, A, 11>
+<U, B, 21>
+<START CKPT(T, U)>
+<START R>
+<COMMIT U>
+<R, B, 31>
+<T, E, 50>
+<COMMIT T>
+<END CKPT>
+<R, E, 60>
+
+Adjuk meg a helyreállítás-kezelő
+tevékenységeit, ha az utolsó lemezre került
+naplóbejegyzés:
+1. <COMMIT U>
+2. <R, E, 60>
+
+Megoldások:
+
+1)
+<ABORT R>
+WRITE(A,11)
+OUTPUT(A)
+WRITE(A,10)
+OUTPUT(A)
+<ABORT T>
+FLUSH LOG
+
+2)
+WRITE(E,60)
+OUTPUT(E)
+WRITE(B,31)
+OUTPUT(B)
+<ABORT R>
+FLUSH LOG
+
+--------------------------------------------------------------------------------------------------
+
+REDO feladatok
+
+Napló:
+<start T>
+<T, A, 10>
+<start U>
+<U, B, 20>
+<T, C, 30>
+<U, D, 40>
+<T, A, 11>
+<U, B, 21>
+<COMMIT U>
+<T, E, 50>
+<COMMIT T>
+<END U>
+<END T>
+
+Adjuk meg a helyreállítás-kezelő
+tevékenységeit, ha az utolsó lemezre került
+naplóbejegyzés:
+1. <start U>
+2. <COMMIT U>
+3. <T, E, 50>
+4. <COMMIT T>
+5. <END U>
+
+Megoldások:
+
+1) Semmit nem kell csinálni
+
+2)
+WRITE(B, 20)
+OUTPUT(B)
+WRITE(D, 40)
+OUTPUT(D)
+WRITE(B, 21)
+OUTPUT(B)
+<END U>
+FLUSH LOG
+
+3)
+Ugyanaz, mint az előző
+
+4)
+WRITE(A,10)
+OUTPUT(A)
+WRITE(B,20)
+OUTPUT(B)
+WRITE(C,30)
+OUTPUT(C)
+WRITE(D,40)
+OUTPUT(D)
+WRITE(A,11)
+OUTPUT(A)
+WRITE(B,21)
+OUTPUT(B)
+<END U>
+WRITE(E,50)
+OUTPUT(E)
+<END T>
+FLUSH LOG
+
+5)
+WRITE(A,10)
+OUTPUT(A)
+WRITE(C,30)
+OUTPUT(C)
+WRITE(A,11)
+OUTPUT(A)
+WRITE(E,50)
+OUTPUT(E)
+<END T>
+FLUSH LOG
+
+--------------------------------------------------------------------------------------------------
+
+UNDO/REDO feladatok
+
+Napló:
+<START T>
+<T, A, 10, 11>
+<START U>
+<U, B, 20, 21>
+<T, C, 30, 31>
+<U, D, 40, 41>
+<COMMIT U>
+<T, E, 50, 51>
+<COMMIT T>
+<END U>
+<END T>
+
+Adjuk meg a helyreállítás-kezelő
+tevékenységeit, ha az utolsó lemezre került
+naplóbejegyzés:
+1. <START U>
+2. <COMMIT U>
+3. <T, E, 50, 51>
+4. <COMMIT T>
+5. <END U>
+
+Megoldások:
+
+1)
+WRITE(A, 10)
+OUTPUT(A)
+<ABORT T>
+<ABORT U>
+FLUSH LOG
+
+2)
+WRITE(B,21)
+OUTPUT(B)
+WRITE(D,41)
+OUTPUT(D)
+<END U>
+WRITE(C,30)
+OUTPUT(C)
+WRITE(A,10)
+OUTPUT(A)
+<ABORT A>
+FLUSH LOG
+
+3)
+WRITE(E,50)
+OUTPUT(E)
+WRITE(B,21)
+OUTPUT(B)
+WRITE(D,41)
+OUTPUT(D)
+<END U>
+WRITE(C,30)
+OUTPUT(C)
+WRITE(A,10)
+OUTPUT(A)
+<ABORT A>
+FLUSH LOG
+
+4)
+WRITE(A, 11)
+OUTPUT(A)
+WRITE(B, 21)
+OUTPUT(B)
+WRITE(C, 31)
+OUTPUT(C)
+WRITE(D, 41)
+OUTPUT(D)
+<END U>
+WRITE(E, 51)
+OUTPUT(E)
+<END T>
+FLUSH LOG
+
+5)
+WRITE(A, 11)
+OUTPUT(A)
+WRITE(C, 31)
+OUTPUT(C)
+WRITE(E, 51)
+OUTPUT(E)
+<END T>
+FLUSH LOG

@@ -1,0 +1,193 @@
+﻿Melyik ket felhasznalo objektumai foglalnak osszesen a legtobb helyet az adatbazisban?
+Vagyis ki foglal a legtöbb helyet, és ki a második legtöbbet?
+
+Megoldás: SYS és MDSYS
+
+SELECT * FROM 
+(select owner, sum(bytes) from dba_segments 
+group by owner order by 2 desc)
+WHERE rownum <= 2;
+
+--------------------------------------------------------------------------------------
+
+Adjuk meg adatfájlonkent, hogy az egyes adatfájlokban mennyi a foglalt 
+hely osszesen (írassuk ki a fájlok méretét is).
+
+select file_name, dba_extents.file_id, dba_data_files.bytes, sum(dba_extents.bytes) 
+from dba_extents join dba_data_files on dba_data_files.file_id=dba_extents.file_id
+group by file_name, dba_extents.file_id, dba_data_files.bytes;
+
+--------------------------------------------------------------------------------------
+
+Hány extens van a 'users01.dbf' adatfájlban? Mekkora ezek összmérete?
+
+select file_id, count(extent_id), sum(bytes) from dba_extents
+where file_id = (select file_id from dba_data_files where file_name like '%users01%')
+group by file_id;
+
+--------------------------------------------------------------------------------------
+
+Hány összefüggő szabad terület van a 'users01.dbf' adatfájlban? Mekkora ezek összmérete?
+
+SELECT count(*), sum(fr.bytes) FROM dba_data_files f, dba_free_space fr
+WHERE file_name LIKE '%/users02%' AND f.file_id=fr.file_id;
+
+--------------------------------------------------------------------------------------
+
+Hány százalékban foglalt a 'users01.dbf' adatfájl?
+
+Megoldás: 0.8
+
+SELECT sum(e.bytes)/f.bytes FROM dba_data_files f, dba_extents e
+WHERE file_name LIKE '%/users01%' AND f.file_id=e.file_id
+GROUP BY f.bytes;
+
+--------------------------------------------------------------------------------------
+
+Melyik táblatéren van az ORAUSER felhasználó dolgozo táblája?
+
+select tablespace_name from dba_tables
+where owner='ORAUSER' and table_name='DOLGOZO';
+
+--------------------------------------------------------------------------------------
+
+Melyik táblatéren van a NIKOVITS felhasználó ELADASOK táblája? (Miért lesz null?)
+
+Megoldás: partícionált tábla
+
+select tablespace_name from dba_tables
+where owner='NIKOVITS' and table_name='ELADASOK';
+
+select tablespace_name from dba_extents
+where owner='NIKOVITS' and segment_name='ELADASOK';
+
+--------------------------------------------------------------------------------------
+
+A NIKOVITS felhasználó CIKK táblája hány blokkot foglal le az adatbázisban? (ARAMIS)
+(Vagyis hány olyan blokk van, ami ehhez a táblához van rendelve és így
+azok már más táblákhoz nem adhatók hozzá?)
+
+SELECT bytes, blocks FROM dba_segments
+WHERE owner='NIKOVITS' AND segment_name='CIKK' AND segment_type='TABLE';
+
+--------------------------------------------------------------------------------------
+
+18 karakteren irodik ki, a kovetkezo formaban: OOOOOOFFFBBBBBBRRR
+OOOOOO -  az objektum azonositoja (egészen pontosan az úgynevezett adatobjektum azonosítója)
+FFF    -  fajl azonositoja (tablateren beluli relativ sorszam)
+BBBBBB -  blokk azonosito (a fajlon beluli sorszam)
+RRR    -  sor azonosito (a blokkon beluli sorszam)
+
+Példa:
+ SELECT dnev, dbms_rowid.rowid_object(ROWID) adatobj, 
+        dbms_rowid.rowid_relative_fno(ROWID) fajl,
+        dbms_rowid.rowid_block_number(ROWID) blokk,
+        dbms_rowid.rowid_row_number(ROWID) sor
+ FROM dolgozo WHERE dnev = 'KING';
+--------------------------------------------------------------------------------------
+
+A NIKOVITS felhasználó CIKK táblájának adatai melyik blokkokban helyezkednek el, és hány sor van az egyes blokkokban?
+(file_id, blokk_id, darab)
+
+
+Megoldás:
+
+ SELECT dbms_rowid.rowid_relative_fno(ROWID) fajl,
+       dbms_rowid.rowid_block_number(ROWID) blokk, count(*)
+FROM nikovits.cikk
+GROUP BY dbms_rowid.rowid_relative_fno(ROWID), dbms_rowid.rowid_block_number(ROWID);
+
+--------------------------------------------------------------------------------------
+
+Állapítsuk meg, hogy a NIKOVITS.ELADASOK táblának a következő adatokkal azonosított sora
+(szla_szam=100) melyik adatfájlban van, azon belül melyik blokkban, és a blokkon belül hányadik a sor?
+(file_név, blokk_id, sorszám)
+
+Az előző feladatban megadott sor melyik adatobjektumban van? (objektum_név)
+Mennyi az objektum azonosítója, és ez milyen objektum? (obj_id, obj_név)
+
+--------------------------------------------------------------------------------------
+
+Írjunk meg egy PLSQL procedúrát, amelyik a paraméterül kapott felhasználónévre kiírja 
+a felhasználó legutoljára létrehozott tábláját, annak méretét byte-okban, valamint a létrehozás
+dátumát. Az output formátuma a következő legyen:
+
+Table_name: NNNNNN   Size: SSSSSS bytes   Created: yyyy.mm.dd.hh:mi
+
+CREATE OR REPLACE PROCEDURE newest_table(p_user VARCHAR2) IS 
+
+--------------------------------------------------------------------------------------
+
+Írjunk meg egy PLSQL procedúrát, amelyik kiírja, hogy a NIKOVITS.TABLA_123 táblának melyik 
+adatblokkjában hány sor van. Az output formátuma soronként: FILE_ID; BLOKK_ID -> darab
+Példa az output egy sorára: 2;563->306
+Vigyázat!!! Azokat az adatblokkokat is ki kell írni, amelyekben a sorok száma 0, de a tábla
+szegmenséhez tartoznak. Az output FILE_ID majd azon belül BLOKK_ID szerint legyen rendezett.
+
+--------------------------------------------------------------------------------------
+
+CREATE TABLE tipus_proba(...)
+TABLESPACE users
+PCTUSED 50  PCTFREE 20  INITRANS 1 MAXTRANS 255
+STORAGE (INITIAL 32K  MINEXTENTS 1  MAXEXTENTS 200  PCTINCREASE 0
+         FREELISTS 1  FREELIST GROUPS  1  BUFFER_POOL  DEFAULT);
+
+STORAGE(...): hogyan viselkedjenek az extensek, mekkorák legyenek, hogyan bővüljenek stb.
+- INITIAL: első extens mérete
+- NEXT: következő extens mérete
+- PCTINCREASE: milyen mértékben növekedjenek az extensek (%-ban) az előzőhöz
+  képest. (50 azt jelenti, hogy másfélszerese lesz a következő)
+- MINEXTENTS: minimális extens darabszám (a tábla létrehozásakor ennyit 
+  automatikusan létrehoz)
+- MAXEXTENTS: maximális extens darabszám
+stb.
+- PCTFREE: hány %-ot hagyjon szabadon
+- PCTUSED: ha ez alá csökken a blokk foglaltsága, akkor szabadnak nyilvánítja a 
+  blokkot, és ismét enged beleírni.
+
+Példa:
+CREATE TABLE t1 (o1 NUMBER, o2 CHAR(20))
+NOLOGGING
+TABLESPACE users
+PCTFREE 0 PCTUSED 50
+STORAGE (INITIAL 100K NEXT 200K MINEXTENTS 3 MAXEXTENTS 5);
+
+ALTER TABLE emp ALLOCATE EXTENT 
+(SIZE 200K DATAFILE '/big/oracle/oradata/oradb/users01.dbf');
+
+--------------------------------------------------------------------------------------
+
+Hozzunk létre egy táblát az EXAMPLE táblatéren, amelynek szerkezete azonos a nikovits.cikk  tábláéval és pontosan 128 KB helyet foglal az adatbázisban. Foglaljunk le manuálisan további 128 KB helyet a táblához. Vigyünk fel sorokat addig, amig az első blokk tele nem lesz, és 1 további sora lesz még a táblának a második blokkban.
+(A felvitelt plsql programmal végezzük és ne kézzel, mert úgy kicsit sokáig tartana.)
+
+create or replace procedure beszuras as
+    fajl_id integer;
+    blokk_id integer;
+    darab integer;
+    blokk_szam integer := 1;
+    i integer := 1;
+begin   
+    while blokk_szam <= 1 loop
+        insert into sajatcikk select * from nikovits.cikk 
+        where ckod=i;
+        commit;
+        i := i+1;
+        
+        select count(*) into blokk_szam from
+        (SELECT dbms_rowid.rowid_relative_fno(ROWID) fajl,
+               dbms_rowid.rowid_block_number(ROWID) blokk
+        FROM sajatcikk
+        GROUP BY dbms_rowid.rowid_relative_fno(ROWID), 
+        dbms_rowid.rowid_block_number(ROWID));
+        
+        dbms_output.put_line(blokk_szam);
+    end loop;
+end;
+/
+
+
+Próbáljuk ki az előzőt ismét, de most a PCTFREE értéket állítsuk 40-re. 
+Mindkét esetben ellenőrizzük is, hogy a sorok tényleg két blokkban vannak,
+és a másodikban csak egyetlen sor van.
+
+--------------------------------------------------------------------------------------

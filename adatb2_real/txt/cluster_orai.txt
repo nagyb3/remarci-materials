@@ -1,0 +1,87 @@
+﻿-- 1. lépés: klaszter létrehozása
+create cluster dolgozo_clust (oazon number(2));
+
+-- 2. lépés: tábla létrehozása a klaszteren
+-- Meg kell adni a klaszter nevét
+create table dolgozocl (dkod number(4), dnev varchar2(10), oazon number(2))
+cluster dolgozo_clust(oazon);
+
+-- Másik tábla létrehozása
+create table osztalycl (oazon number(2), nev varchar2(14))
+cluster dolgozo_clust(oazon);
+
+-- Beszúrások a táblákba - nem működik, mert nincs index
+insert into osztalycl select oazon, onev from osztaly;
+insert into dolgozocl select dkod, dnev, oazon from dolgozo;
+
+-- 3. lépés: index létrehozása a klaszterhez
+create index dolgozocl_ind on cluster dolgozo_clust;
+
+-- Most már lehet lekérdezni és beszúrni.
+-- Eddig ez sem ment
+select * from dolgozocl;
+select * from osztalycl;
+
+-- Két sor rowid-ja egyezük, mivel ugyanott tárolódnak
+SELECT rowid, dnev FROM dolgozocl WHERE oazon=10
+ UNION
+SELECT rowid, nev FROM osztalycl WHERE oazon=10;
+
+-- Hash klaszter létrehozásához töröljük az eddigieket
+drop cluster dolgozo_clust;
+drop table dolgozocl;
+drop table osztalycl;
+
+-- Hashkeys megadása szükséges
+-- Nagyjából a különböző klaszter kulcsok számára érdemes beállíteni
+create cluster dolgozo_clust (oazon number(2))
+hashkeys 5;
+
+-- A táblák létrehozása ugyanúgy zajlik
+create table dolgozocl (dkod number(4), dnev varchar2(10), oazon number(2))
+cluster dolgozo_clust(oazon);
+
+create table osztalycl (oazon number(2), nev varchar2(14))
+cluster dolgozo_clust(oazon);
+
+-- Nem kell indexet létrehozni a beszúráshoz és a lekérdezéshez
+insert into osztalycl select oazon, onev from osztaly;
+select * from osztalycl;
+
+-- Egytáblás klaszter létrehozása
+create cluster dolgozo_single_cluster(oazon number(2))
+single table hashkeys 5;
+
+-- Tábla létrehozása az egytáblás klaszterre
+create table dolgozohashcl (dkod number(4), dnev varchar2(10), oazon number(2))
+cluster doglozo_single_cluster(oazon);
+
+-- Saját hash függvény megadása
+drop table dolgozohashcl;
+drop cluster doglozo_single_cluster;
+
+create cluster dolgozo_single_cluster(oazon number(2))
+single table hashkeys 3 
+hash is MOD(oazon, 3);
+
+-- Információk lekérdezése a klaszterekről
+SELECT cluster_name, cluster_type, function, hashkeys, single_table
+FROM dba_clusters WHERE owner='VDANI';
+
+-- Kalszteren lévő táblák a dba_tables-ből
+SELECT cluster_name, table_name FROM dba_tables 
+WHERE owner='VDANI' AND cluster_name IS NOT NULL;
+
+-- Klaszter oszlopok lekérdezése
+SELECT cluster_name, clu_column_name, table_name, tab_column_name 
+FROM dba_clu_columns WHERE owner='VDANI';
+
+-- Saját hash függvények
+SELECT cluster_name, hash_expression 
+FROM dba_cluster_hash_expressions WHERE owner='VDANI';
+
+-- Információk a clusterekrõl a katalógusban (adatszótár nézetekben): 
+-- DBA_CLUSTERS 
+-- DBA_TABLES (cluster_name oszlop -> melyik klaszteren van a tábla) 
+-- DBA_CLU_COLUMNS (táblák oszlopainak megfeleltetése a klaszter kulcsának)
+-- DBA_CLUSTER_HASH_EXPRESSIONS (hash klaszterek hash függvényei)
